@@ -18,22 +18,16 @@ class Device(object):
         device = cls()
         devices[cls.name] = device
         cls.sensors = []
-        for attr in dir(cls):
-            obj = getattr(cls, attr)
-            if not isinstance(obj, Sensor):
-                continue
-            obj.name = attr
-            obj._device = device
-            cls.sensors.append(attr)
-        
-    @property
-    def controllers(self):
-        for name in dir(self):
-            if name == 'actions':
-                continue
-            attr = getattr(self, name)
-            if hasattr(attr, 'im_func') and isinstance(attr.im_func, controller):
-                yield name
+        cls.controllers = []
+        for attr in dir(device):
+            obj = getattr(device, attr)
+            if isinstance(obj, Sensor):
+                obj.name = attr
+                obj._device = device
+                cls.sensors.append(attr)
+            elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
+                obj._device = device
+                cls.controllers.append(attr)
                 
     def update(self):
         pass

@@ -11,8 +11,6 @@ class RegisterTest(TestCase):
             humidity = Sensor()
             temperature = Sensor()
         self.assertEqual(1, len(device.devices))
-        self.assertEqual('humidity', device.devices['test'].humidity.name)
-        self.assertEqual('test.humidity', device.devices['test'].humidity.full_name)
         
 class SensorsTest(TestCase):
     def test(self):
@@ -21,6 +19,8 @@ class SensorsTest(TestCase):
             temperature = Sensor()
         device = TestDevice()
         self.assertEqual(['humidity', 'temperature'], device.sensors)
+        self.assertEqual('humidity', device.humidity.name)
+        self.assertEqual('test.humidity', device.humidity.full_name)
         
 class ControllersTest(TestCase):
     def test(self):
