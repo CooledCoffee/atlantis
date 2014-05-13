@@ -26,7 +26,7 @@ class Device(object):
                 obj._device = device
                 cls.sensors.append(attr)
             elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
-                obj._device = device
+                obj.im_func._device = device
                 cls.controllers.append(attr)
                 
     def update(self):
@@ -64,4 +64,14 @@ class Sensor(object):
         raise NotImplementedError()
 
 class controller(Function):
-    pass
+    def _init(self, affects=None):
+        super(controller, self)._init()
+        self._affects = affects
+        
+    def _call(self, *args, **kw):
+        result = super(controller, self)._call(*args, **kw)
+        if self._affects:
+            prop = getattr(self._device, self._affects)
+            prop.update()
+        return result
+    
