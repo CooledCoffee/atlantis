@@ -1,0 +1,73 @@
+# -*- coding: utf-8 -*-
+from atlantis import util
+from atlantis.base import AutoRegisterType
+from atlantis.db import Sensor as SensorModel
+from datetime import datetime
+from decorated import Function
+from decorated.base.context import ctx
+import json
+
+devices = {}
+
+class Device(object):
+    __metaclass__ = AutoRegisterType
+    
+    @classmethod
+    def _register(cls):
+        cls.name = util.calc_name(cls)
+        device = cls()
+        devices[cls.name] = device
+        cls.sensors = []
+        for attr in dir(cls):
+            obj = getattr(cls, attr)
+            if not isinstance(obj, Sensor):
+                continue
+            obj.name = attr
+            obj._device = device
+            cls.sensors.append(attr)
+        
+    @property
+    def controllers(self):
+        for name in dir(self):
+            if name == 'actions':
+                continue
+            attr = getattr(self, name)
+            if hasattr(attr, 'im_func') and isinstance(attr.im_func, controller):
+                yield name
+                
+    def update(self):
+        pass
+    
+class Sensor(object):
+    def __init__(self):
+        self._device = None
+        self.name = None
+        
+    @property
+    def full_name(self):
+        return '%s.%s' % (self._device.name, self.name) 
+        
+    @property
+    def time(self):
+        sensor = ctx.session.get(SensorModel, self.full_name)
+        return sensor.time
+    
+    @property
+    def value(self):
+        sensor = ctx.session.get(SensorModel, self.full_name)
+        return json.loads(sensor.value)
+    
+    @value.setter
+    def value(self, value):
+        sensor = ctx.session.get_or_create(SensorModel, self.full_name)
+        sensor.value = json.dumps(value)
+        sensor.time = datetime.now()
+    
+    def update(self):
+        self.value = self._retrieve()
+    
+    def _retrieve(self):
+        raise NotImplementedError()
+
+class controller(Function):
+    pass
