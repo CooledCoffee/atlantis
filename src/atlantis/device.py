@@ -28,14 +28,12 @@ class Device(object):
             elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
                 obj.im_func._device = device
                 cls.controllers.append(attr)
-                
-    def update(self):
-        pass
     
 class Sensor(object):
-    def __init__(self):
-        self._device = None
+    def __init__(self, interval=60):
         self.name = None
+        self._device = None
+        self._interval = interval
         
     @property
     def full_name(self):
@@ -44,21 +42,23 @@ class Sensor(object):
     @property
     def time(self):
         sensor = ctx.session.get(SensorModel, self.full_name)
-        return sensor.time
+        return sensor.time if sensor is not None else datetime(2000, 1, 1)
     
     @property
     def value(self):
         sensor = ctx.session.get(SensorModel, self.full_name)
-        return json.loads(sensor.value)
+        return json.loads(sensor.value) if sensor is not None else None
     
     @value.setter
     def value(self, value):
         sensor = ctx.session.get_or_create(SensorModel, self.full_name)
         sensor.value = json.dumps(value)
         sensor.time = datetime.now()
-    
-    def update(self):
-        self.value = self._retrieve()
+        
+    def update(self, force=False):
+        elapsed = (datetime.now() - self.time).total_seconds()
+        if force or elapsed > self._interval:
+            self.value = self._retrieve()
     
     def _retrieve(self):
         raise NotImplementedError()
