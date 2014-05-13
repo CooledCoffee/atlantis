@@ -37,9 +37,3 @@ class Solution(object):
     def feasible(self):
         raise NotImplementedError()
     
-def check_problems():
-    return [p for p in problems.values() if p.exists()]
-    
-def find_solutions(problem):
-    candidates = solutions[problem.name]
-    return [c for c in candidates if c.feasible()]

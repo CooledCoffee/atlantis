@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from atlantis import worker, device
+from atlantis import worker, device, rule
 from atlantis.db import Sensor as SensorModel
 from atlantis.device import Device, Sensor
+from atlantis.rule import Problem, Solution
+from collections import defaultdict
 from fixtures._fixtures.monkeypatch import MonkeyPatch
+from fixtures2 import TestCase
 from testutil import DbTestCase
 import json
 
@@ -28,3 +31,39 @@ class UpdateSensorsTest(DbTestCase):
             self.assertEqual('thermometer.temperature', sensors[1].name)
             self.assertEqual(25, json.loads(sensors[1].value))
             
+class CheckProblemsTest(TestCase):
+    def test(self):
+        # set up
+        self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
+        class TemperatureTooHighProblem(Problem):
+            def exists(self):
+                return True
+        class TemperatureTooLowProblem(Problem):
+            def exists(self):
+                return False
+            
+        # test
+        problems = worker.check_problems()
+        self.assertEqual(1, len(problems))
+        self.assertIsInstance(problems[0], TemperatureTooHighProblem)
+        
+class FindSolutionsTest(TestCase):
+    def test(self):
+        # set up
+        self.useFixture(MonkeyPatch('atlantis.rule.solutions', defaultdict(list)))
+        class TemperatureTooHighProblem(Problem):
+            pass
+        class OpenWindowSolution(Solution):
+            targets = [TemperatureTooHighProblem]
+            def feasible(self):
+                return True
+        class OpenAirConditioningSolution(Solution):
+            targets = [TemperatureTooHighProblem]
+            def feasible(self):
+                return False
+            
+        # test
+        problem = TemperatureTooHighProblem()
+        solutions = worker.find_solutions(problem)
+        self.assertEqual(1, len(solutions))
+        self.assertIsInstance(solutions[0], OpenWindowSolution)
