@@ -17,8 +17,9 @@ class RegisterTest(TestCase):
         class OpenAirConditioningSolution(Solution):
             targets = [TemperatureTooHighProblem]
         self.assertEqual(2, len(rule.solutions))
-        self.assertEqual([OpenWindowSolution, OpenAirConditioningSolution], rule.solutions[TemperatureTooHighProblem])
-        self.assertEqual([OpenWindowSolution], rule.solutions[TemperatureTooLowProblem])
+        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_HIGH'][0], OpenWindowSolution)
+        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_HIGH'][1], OpenAirConditioningSolution)
+        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_LOW'][0], OpenWindowSolution)
             
 class FindSolutionsTest(TestCase):
     def test(self):
@@ -34,7 +35,7 @@ class FindSolutionsTest(TestCase):
             targets = [TemperatureTooHighProblem]
             def feasible(self):
                 return False
-    
+            
         # test
         problem = TemperatureTooHighProblem()
         solutions = rule.find_solutions(problem)

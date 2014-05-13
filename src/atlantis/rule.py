@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from atlantis import util
 from atlantis.base import AutoRegisterType
 from collections import defaultdict
 
-problems = []
+problems = {}
 solutions = defaultdict(list)
 
 class Problem(object):
@@ -11,7 +12,9 @@ class Problem(object):
     
     @classmethod
     def _register(cls):
-        problems.append(cls)
+        cls.name = util.calc_name(cls).upper()
+        problem = cls()
+        problems[cls.name] = problem
         
     def exists(self):
         raise NotImplementedError()
@@ -23,8 +26,10 @@ class Solution(object):
     
     @classmethod
     def _register(cls):
+        cls.name = util.calc_name(cls).upper()
+        solution = cls()
         for target in cls.targets:
-            solutions[target].append(cls)
+            solutions[target.name].append(solution)
     
     def apply(self):
         raise NotImplementedError()
@@ -33,11 +38,8 @@ class Solution(object):
         raise NotImplementedError()
     
 def check_problems():
-    instances = [p() for p in problems]
-    return [p for p in instances if p.exists()]
+    return [p for p in problems.values() if p.exists()]
     
 def find_solutions(problem):
-    candidates = solutions[type(problem)]
-    candidates = [c() for c in candidates]
-    candidates = [c for c in candidates if c.feasible()]
-    return candidates
+    candidates = solutions[problem.name]
+    return [c for c in candidates if c.feasible()]
