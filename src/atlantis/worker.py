@@ -12,4 +12,4 @@ def _check_problems():
     
 def _find_solutions(problem):
     candidates = rule.solutions[problem.name]
-    return [c for c in candidates if c.feasible()]
+    return [c for c in candidates if c._fitness() > 0]

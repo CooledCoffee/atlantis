@@ -43,6 +43,6 @@ class Solution(object):
     def apply(self):
         raise NotImplementedError()
     
-    def feasible(self):
+    def _fitness(self):
         raise NotImplementedError()
     
