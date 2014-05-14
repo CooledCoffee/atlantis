@@ -8,7 +8,6 @@ dao = None
 class Problem(Model):
     name = Column(String, primary_key=True)
     exists = Column(Boolean, nullable=False)
-    time = Column(DateTime, nullable=False)
 
 class Sensor(Model):
     name = Column(String, primary_key=True)

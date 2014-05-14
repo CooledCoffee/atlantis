@@ -1,7 +1,6 @@
 create table problem (
 	name varchar(64) primary key,
-	`exists` tinyint not null,
-	time datetime not null
+	`exists` tinyint not null
 );
 
 create table sensor (

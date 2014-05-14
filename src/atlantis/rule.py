@@ -22,7 +22,6 @@ class Problem(object):
     def check(self):
         model = ctx.session.get_or_create(ProblemModel, self.name)
         model.exists = self._exists()
-        model.time = datetime.now()
         return model.exists
         
     def _exists(self):
