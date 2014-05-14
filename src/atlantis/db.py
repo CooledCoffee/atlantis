@@ -10,3 +10,4 @@ class Sensor(Model):
     time = Column(DateTime)
     value = Column(String)
     
+SensorModel = Sensor

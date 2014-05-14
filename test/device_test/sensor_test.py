@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.db import Sensor as SensorModel
+from atlantis.db import SensorModel
 from atlantis.device import Sensor
 from datetime import datetime
 from decorated.base.dict import Dict

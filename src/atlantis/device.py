@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
 from atlantis.base import AutoRegisterType
-from atlantis.db import Sensor as SensorModel
+from atlantis.db import SensorModel
 from datetime import datetime
 from decorated import Function
 from decorated.base.context import ctx

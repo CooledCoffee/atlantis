@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from atlantis import worker, device, rule
-from atlantis.db import Sensor as SensorModel
+from atlantis import worker, device
+from atlantis.db import SensorModel
 from atlantis.device import Device, Sensor
 from atlantis.rule import Problem, Solution
 from collections import defaultdict
