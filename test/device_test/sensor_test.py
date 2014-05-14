@@ -9,17 +9,20 @@ from testutil import DbTestCase
 class GetSetTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1, 0, 0, 0)))
+        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2010, 1, 1, 0, 0, 0)))
         sensor = Sensor()
         sensor._device = Dict(name='thermometer')
         sensor._name = 'temperature'
         
         # test
         with self.mysql.dao.SessionContext():
+            self.assertIsNone(sensor.value)
+            self.assertEqual(datetime(2000, 1, 1, 0, 0, 0), sensor.time)
+        with self.mysql.dao.SessionContext():
             sensor.value = 25
         with self.mysql.dao.SessionContext():
             self.assertEqual(25, sensor.value)
-            self.assertEqual(datetime(2000, 1, 1, 0, 0, 0), sensor.time)
+            self.assertEqual(datetime(2010, 1, 1, 0, 0, 0), sensor.time)
 
 class UpdateTest(DbTestCase):
     def setUp(self):
