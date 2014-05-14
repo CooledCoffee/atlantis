@@ -36,10 +36,10 @@ class CheckProblemsTest(TestCase):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
         class TemperatureTooHighProblem(Problem):
-            def exists(self):
+            def check(self):
                 return True
         class TemperatureTooLowProblem(Problem):
-            def exists(self):
+            def check(self):
                 return False
             
         # test

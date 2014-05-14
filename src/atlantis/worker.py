@@ -8,7 +8,7 @@ def _update_sensors():
             sensor.update()
             
 def _check_problems():
-    return [p for p in rule.problems.values() if p.exists()]
+    return [p for p in rule.problems.values() if p.check()]
     
 def _find_solutions(problem):
     candidates = rule.solutions[problem.name]
