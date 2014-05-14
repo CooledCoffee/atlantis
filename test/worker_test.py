@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import worker, device
-from atlantis.db import SensorModel
+from atlantis.db import SensorModel, SolutionModel
 from atlantis.device import Device, Sensor
 from atlantis.rule import Problem, Solution
 from collections import defaultdict
@@ -30,6 +30,30 @@ class UpdateSensorsTest(DbTestCase):
             self.assertEqual(50, json.loads(sensors[0].value))
             self.assertEqual('thermometer.temperature', sensors[1].name)
             self.assertEqual(25, json.loads(sensors[1].value))
+            
+class UpdateSolutionStatusesTest(DbTestCase):
+    def test(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _applied(self):
+                return True
+        class OpenAirConditioningSolution(Solution):
+            targets = []
+            def _applied(self):
+                return False
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=True))
+            session.add(SolutionModel(name='OPEN_AIR_CONDITIONING', applied=True))
+            session.add(SolutionModel(name='OPEN_FAN', applied=False))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            worker._update_solution_statuses()
+        with self.mysql.dao.create_session() as session:
+            self.assertTrue(session.get(SolutionModel, 'OPEN_WINDOW').applied)
+            self.assertFalse(session.get(SolutionModel, 'OPEN_AIR_CONDITIONING').applied)
+            self.assertFalse(session.get(SolutionModel, 'OPEN_FAN').applied)
             
 class CheckProblemsTest(TestCase):
     def test(self):
