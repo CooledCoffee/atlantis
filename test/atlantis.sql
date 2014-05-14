@@ -8,3 +8,9 @@ create table sensor (
 	time datetime not null,
 	value text not null
 );
+
+create table solution (
+	name varchar(64) primary key,
+	applied tinyint not null,
+	data text
+);
