@@ -44,6 +44,12 @@ class Solution(object):
         model.data = json.dumps(data) if data is not None else None
         model.applied = True
         
+    def check(self):
+        model = ctx.session.get(SolutionModel, self.name)
+        if model is not None and model.applied:
+            return 0
+        return self._fitness()
+        
     def update(self):
         model = ctx.session.get(SolutionModel, self.name)
         model.applied = self._applied()

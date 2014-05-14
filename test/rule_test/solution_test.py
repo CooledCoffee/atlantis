@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis import rule
 from atlantis.db import SolutionModel
-from atlantis.rule import Problem, Solution
-from collections import defaultdict
+from atlantis.rule import Solution
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures2 import TestCase
 from testutil import DbTestCase
@@ -73,3 +72,62 @@ class UpdateTest(DbTestCase):
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertFalse(model.applied)
             
+class CheckTest(DbTestCase):
+    def test_ok_1(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self):
+                return 100
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.check()
+        self.assertEqual(100, fitness)
+        
+    def test_ok_2(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self):
+                return 100
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.check()
+        self.assertEqual(100, fitness)
+        
+    def test_not_fit(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self):
+                return 0
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.check()
+        self.assertEqual(0, fitness)
+        
+    def test_already_applied(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self):
+                return 100
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=True))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.check()
+        self.assertEqual(0, fitness)
+        
