@@ -2,13 +2,11 @@
 from atlantis import util
 from atlantis.base import AutoRegisterType
 from atlantis.db import ProblemModel, SolutionModel
-from collections import defaultdict
-from datetime import datetime
 from decorated.base.context import ctx
 import json
 
 problems = {}
-solutions = defaultdict(list)
+solutions = {}
 
 class Problem(object):
     __metaclass__ = AutoRegisterType
@@ -37,8 +35,7 @@ class Solution(object):
     def _register(cls):
         cls.name = util.calc_name(cls).upper()
         solution = cls()
-        for target in cls.targets:
-            solutions[target.name].append(solution)
+        solutions[cls.name] = solution
     
     def apply(self):
         model = ctx.session.get_or_create(SolutionModel, self.name)

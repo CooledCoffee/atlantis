@@ -10,19 +10,14 @@ import json
 
 class RegisterTest(TestCase):
     def test(self):
-        self.useFixture(MonkeyPatch('atlantis.rule.solutions', defaultdict(list)))
-        class TemperatureTooHighProblem(Problem):
-            pass
-        class TemperatureTooLowProblem(Problem):
-            pass
+        self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
         class OpenWindowSolution(Solution):
-            targets = [TemperatureTooHighProblem, TemperatureTooLowProblem]
+            targets = []
         class OpenAirConditioningSolution(Solution):
-            targets = [TemperatureTooHighProblem]
+            targets = []
         self.assertEqual(2, len(rule.solutions))
-        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_HIGH'][0], OpenWindowSolution)
-        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_HIGH'][1], OpenAirConditioningSolution)
-        self.assertIsInstance(rule.solutions['TEMPERATURE_TOO_LOW'][0], OpenWindowSolution)
+        self.assertIsInstance(rule.solutions['OPEN_WINDOW'], OpenWindowSolution)
+        self.assertIsInstance(rule.solutions['OPEN_AIR_CONDITIONING'], OpenAirConditioningSolution)
         
 class ApplyTest(DbTestCase):
     def test_simple(self):

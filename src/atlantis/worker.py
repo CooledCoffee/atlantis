@@ -11,5 +11,6 @@ def _check_problems():
     return [p for p in rule.problems.values() if p.check()]
     
 def _find_solutions(problem):
-    candidates = rule.solutions[problem.name]
+    problem_class = type(problem)
+    candidates = [s for s in rule.solutions.values() if problem_class in s.targets]
     return [c for c in candidates if c._fitness() > 0]
