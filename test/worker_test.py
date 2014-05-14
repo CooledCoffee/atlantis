@@ -78,11 +78,11 @@ class FindBestSolutionTest(TestCase):
             pass
         class OpenWindowSolution(Solution):
             targets = [TemperatureTooHighProblem]
-            def _fitness(self):
+            def check(self):
                 return 100
         class OpenAirConditioningSolution(Solution):
             targets = [TemperatureTooHighProblem]
-            def _fitness(self):
+            def check(self):
                 return 0
             
         # test
@@ -97,7 +97,7 @@ class FindBestSolutionTest(TestCase):
             pass
         class OpenWindowSolution(Solution):
             targets = [TemperatureTooHighProblem]
-            def _fitness(self):
+            def check(self):
                 return 0
             
         # test
