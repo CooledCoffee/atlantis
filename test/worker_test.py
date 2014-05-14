@@ -3,7 +3,6 @@ from atlantis import worker, device
 from atlantis.db import SensorModel, SolutionModel
 from atlantis.device import Device, Sensor
 from atlantis.rule import Problem, Solution
-from collections import defaultdict
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures2 import TestCase
 from testutil import DbTestCase
@@ -71,10 +70,10 @@ class CheckProblemsTest(TestCase):
         self.assertEqual(1, len(problems))
         self.assertIsInstance(problems[0], TemperatureTooHighProblem)
         
-class FindSolutionsTest(TestCase):
-    def test(self):
+class FindBestSolutionTest(TestCase):
+    def test_success(self):
         # set up
-        self.useFixture(MonkeyPatch('atlantis.rule.solutions', defaultdict(list)))
+        self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
         class TemperatureTooHighProblem(Problem):
             pass
         class OpenWindowSolution(Solution):
@@ -88,6 +87,21 @@ class FindSolutionsTest(TestCase):
             
         # test
         problem = TemperatureTooHighProblem()
-        solutions = worker._find_solutions(problem)
-        self.assertEqual(1, len(solutions))
-        self.assertIsInstance(solutions[0], OpenWindowSolution)
+        solution = worker._find_best_solution(problem)
+        self.assertIsInstance(solution, OpenWindowSolution)
+        
+    def test_no_solution(self):
+        # set up
+        self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
+        class TemperatureTooHighProblem(Problem):
+            pass
+        class OpenWindowSolution(Solution):
+            targets = [TemperatureTooHighProblem]
+            def _fitness(self):
+                return 0
+            
+        # test
+        problem = TemperatureTooHighProblem()
+        solution = worker._find_best_solution(problem)
+        self.assertIsNone(solution)
+        
