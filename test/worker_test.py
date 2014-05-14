@@ -22,7 +22,7 @@ class UpdateSensorsTest(DbTestCase):
         
         # test
         with self.mysql.dao.SessionContext():
-            worker.update_sensors()
+            worker._update_sensors()
         with self.mysql.dao.create_session() as session:
             sensors = session.query(SensorModel).all()
             self.assertEqual(2, len(sensors))
@@ -43,7 +43,7 @@ class CheckProblemsTest(TestCase):
                 return False
             
         # test
-        problems = worker.check_problems()
+        problems = worker._check_problems()
         self.assertEqual(1, len(problems))
         self.assertIsInstance(problems[0], TemperatureTooHighProblem)
         
@@ -64,6 +64,6 @@ class FindSolutionsTest(TestCase):
             
         # test
         problem = TemperatureTooHighProblem()
-        solutions = worker.find_solutions(problem)
+        solutions = worker._find_solutions(problem)
         self.assertEqual(1, len(solutions))
         self.assertIsInstance(solutions[0], OpenWindowSolution)
