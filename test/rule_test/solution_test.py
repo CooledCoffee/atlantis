@@ -59,3 +59,22 @@ class ApplyTest(DbTestCase):
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertTrue(model.applied)
             self.assertEqual('new data', json.loads(model.data))
+
+class UpdateTest(DbTestCase):
+    def test(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _applied(self):
+                return False
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=True, data=json.dumps('old data')))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            solution.update()
+        with self.mysql.dao.create_session() as session:
+            model = session.get(SolutionModel, 'OPEN_WINDOW')
+            self.assertFalse(model.applied)
+            

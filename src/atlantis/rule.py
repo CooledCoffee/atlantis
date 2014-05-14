@@ -46,6 +46,13 @@ class Solution(object):
         data = self._apply(data)
         model.data = json.dumps(data) if data is not None else None
         model.applied = True
+        
+    def update(self):
+        model = ctx.session.get(SolutionModel, self.name)
+        model.applied = self._applied()
+    
+    def _applied(self):
+        raise NotImplementedError()
     
     def _apply(self, data):
         raise NotImplementedError()
