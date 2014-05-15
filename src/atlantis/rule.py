@@ -3,6 +3,7 @@ from atlantis import util
 from atlantis.base import AutoRegisterType
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
+from loggingd import log_enter, log_return
 import json
 
 problems = {}
@@ -18,6 +19,8 @@ class Problem(object):
         problem = cls()
         problems[cls.name] = problem
         
+    @log_enter('[DEBUG] Checking problem {self.name} ...')
+    @log_return('Found problem {self.name}.', condition='ret')
     def check(self):
         model = ctx.session.get_or_create(ProblemModel, self.name)
         model.exists = self._exists()
@@ -37,6 +40,7 @@ class Solution(object):
         solution = cls()
         solutions[cls.name] = solution
     
+    @log_enter('Applying solution {self.name} ...')
     def apply(self):
         model = ctx.session.get_or_create(SolutionModel, self.name)
         data = json.loads(model.data) if model.data is not None else None
@@ -50,6 +54,7 @@ class Solution(object):
             return 0
         return self._fitness()
         
+    @log_enter('[DEBUG] Updating solution status {self.name} ...')
     def update(self):
         model = ctx.session.get(SolutionModel, self.name)
         model.applied = self._applied()
