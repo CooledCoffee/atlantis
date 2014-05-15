@@ -24,23 +24,22 @@ class Device(object):
             obj = getattr(device, attr)
             if isinstance(obj, Sensor):
                 obj.name = attr
+                obj.full_name = '%s.%s' % (cls.name, obj.name)
                 obj._device = device
                 cls.sensors.append(attr)
             elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
                 c = obj.im_func
                 c.name = attr
+                c.full_name = '%s.%s' % (cls.name, c.name)
                 c._device = device
                 cls.controllers.append(attr)
     
 class Sensor(object):
     def __init__(self, interval=60):
         self.name = None
+        self.full_name = None
         self._device = None
         self._interval = interval
-        
-    @property
-    def full_name(self):
-        return '%s.%s' % (self._device.name, self.name)
         
     @property
     def time(self):
@@ -69,16 +68,14 @@ class Sensor(object):
         raise NotImplementedError()
 
 class controller(Function):
-    @property
-    def full_name(self):
-        return '%s.%s' % (self._device.name, self.name)
-    
     def _init(self, affects=None):
         super(controller, self)._init()
         self._affects = affects
         self.name = None
+        self.full_name = None
         self._device = None
         
+    @log_enter('Triggering controller {self.full_name} ...')
     def _call(self, *args, **kw):
         result = super(controller, self)._call(*args, **kw)
         if self._affects:

@@ -2,7 +2,6 @@
 from atlantis.db import SensorModel
 from atlantis.device import Sensor
 from datetime import datetime
-from decorated.base.dict import Dict
 from fixtures2 import DateTimeFixture
 from testutil import DbTestCase
 
@@ -11,8 +10,7 @@ class GetSetTest(DbTestCase):
         # set up
         self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2010, 1, 1, 0, 0, 0)))
         sensor = Sensor()
-        sensor._device = Dict(name='thermometer')
-        sensor._name = 'temperature'
+        sensor.full_name = 'thermometer.temperature'
         
         # test
         with self.mysql.dao.SessionContext():
@@ -28,8 +26,7 @@ class UpdateTest(DbTestCase):
     def setUp(self):
         super(UpdateTest, self).setUp()
         self.sensor = Sensor()
-        self.sensor.name = 'temperature'
-        self.sensor._device = Dict(name='thermometer')
+        self.sensor.full_name = 'thermometer.temperature'
         self.sensor._retrieve = lambda: 25
         
     def test_expired(self):
