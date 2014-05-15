@@ -61,7 +61,7 @@ class Sensor(object):
     @log_and_ignore_error('Failed to update sensor {self.full_name}.')
     def update(self, force=False):
         elapsed = (datetime.now() - self.time).total_seconds()
-        if force or elapsed > self._interval:
+        if force or elapsed > self._interval - 10:
             self.value = self._retrieve()
     
     def _retrieve(self):

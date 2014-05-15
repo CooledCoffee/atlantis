@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import SensorModel
 from atlantis.device import Sensor
-from datetime import datetime
+from datetime import datetime, timedelta
 from fixtures2 import DateTimeFixture
 from testutil import DbTestCase
 
@@ -45,6 +45,18 @@ class UpdateTest(DbTestCase):
             self.sensor.update()
         with self.mysql.dao.SessionContext():
             self.assertEqual(24, self.sensor.value)
+            
+    def test_almost_expired(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            time = datetime.now() - timedelta(seconds=55)
+            session.add(SensorModel(name='thermometer.temperature', value=24, time=time))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            self.sensor.update()
+        with self.mysql.dao.SessionContext():
+            self.assertEqual(25, self.sensor.value)
     
     def test_force(self):
         # set up
