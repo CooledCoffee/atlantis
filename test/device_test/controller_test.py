@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import Device, Sensor, controller
+from atlantis.device import Device, Sensor, Controller
 from fixtures2 import TestCase
 
 class AffectsTest(TestCase):
@@ -11,7 +11,7 @@ class AffectsTest(TestCase):
                 case.updated = True
         class TestDevice(Device):
             power = PowerSensor()
-            @controller(affects='power')
+            @Controller(affects='power')
             def on(self):
                 pass
             

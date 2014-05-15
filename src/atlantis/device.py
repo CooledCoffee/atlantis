@@ -27,7 +27,7 @@ class Device(object):
                 obj.full_name = '%s.%s' % (cls.name, obj.name)
                 obj._device = device
                 cls.sensors.append(attr)
-            elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
+            elif hasattr(obj, 'im_func') and isinstance(obj.im_func, Controller):
                 c = obj.im_func
                 c.name = attr
                 c.full_name = '%s.%s' % (cls.name, c.name)
@@ -67,9 +67,9 @@ class Sensor(object):
     def _retrieve(self):
         raise NotImplementedError()
 
-class controller(Function):
+class Controller(Function):
     def _init(self, affects=None):
-        super(controller, self)._init()
+        super(Controller, self)._init()
         self._affects = affects
         self.name = None
         self.full_name = None
@@ -77,7 +77,7 @@ class controller(Function):
         
     @log_enter('Triggering controller {self.full_name} ...')
     def _call(self, *args, **kw):
-        result = super(controller, self)._call(*args, **kw)
+        result = super(Controller, self)._call(*args, **kw)
         if self._affects:
             prop = getattr(self._device, self._affects)
             prop.update()

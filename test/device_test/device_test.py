@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import device
-from atlantis.device import Device, Sensor, controller
+from atlantis.device import Device, Sensor, Controller
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures2 import TestCase
 
@@ -25,11 +25,11 @@ class SensorsTest(TestCase):
 class ControllersTest(TestCase):
     def test(self):
         class TestDevice(Device):
-            @controller
+            @Controller
             def on(self):
                 pass
             
-            @controller
+            @Controller
             def off(self):
                 pass
         device = TestDevice()

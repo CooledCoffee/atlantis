@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import Device, Sensor, controller
+from atlantis.device import Device, Sensor, Controller
 from atlantis.rule import Problem, Solution
 from atlantis.util import init
 
 Device = Device
 Sensor = Sensor
-controller = controller
+controller = Controller
 
 Problem = Problem
 Solution = Solution
