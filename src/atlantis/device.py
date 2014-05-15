@@ -27,7 +27,9 @@ class Device(object):
                 obj._device = device
                 cls.sensors.append(attr)
             elif hasattr(obj, 'im_func') and isinstance(obj.im_func, controller):
-                obj.im_func._device = device
+                c = obj.im_func
+                c.name = attr
+                c._device = device
                 cls.controllers.append(attr)
     
 class Sensor(object):
@@ -38,7 +40,7 @@ class Sensor(object):
         
     @property
     def full_name(self):
-        return '%s.%s' % (self._device.name, self.name) 
+        return '%s.%s' % (self._device.name, self.name)
         
     @property
     def time(self):
@@ -67,9 +69,15 @@ class Sensor(object):
         raise NotImplementedError()
 
 class controller(Function):
+    @property
+    def full_name(self):
+        return '%s.%s' % (self._device.name, self.name)
+    
     def _init(self, affects=None):
         super(controller, self)._init()
         self._affects = affects
+        self.name = None
+        self._device = None
         
     def _call(self, *args, **kw):
         result = super(controller, self)._call(*args, **kw)

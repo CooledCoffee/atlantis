@@ -33,5 +33,6 @@ class ControllersTest(TestCase):
             def off(self):
                 pass
         device = TestDevice()
-        props = list(device.controllers)
-        self.assertEqual(['off', 'on'], props)
+        self.assertEqual(['off', 'on'], device.controllers)
+        self.assertEqual('on', device.on.name)
+        self.assertEqual('test.on', device.on.full_name)
