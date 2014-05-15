@@ -44,7 +44,7 @@ class Sensor(object):
     @property
     def time(self):
         sensor = ctx.session.get(SensorModel, self.full_name)
-        return sensor.time if sensor is not None else datetime(2000, 1, 1)
+        return sensor.time if sensor is not None else datetime(1970, 1, 1)
     
     @property
     def value(self):
