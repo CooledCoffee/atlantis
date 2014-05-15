@@ -5,6 +5,7 @@ from atlantis.db import SensorModel
 from datetime import datetime
 from decorated import Function
 from decorated.base.context import ctx
+from loggingd import log_and_ignore_error, log_enter
 import json
 
 devices = {}
@@ -55,6 +56,8 @@ class Sensor(object):
         sensor.value = json.dumps(value)
         sensor.time = datetime.now()
         
+    @log_enter('Updating sensor {self.full_name} ...')
+    @log_and_ignore_error('Failed to update sensor {self.full_name}.')
     def update(self, force=False):
         elapsed = (datetime.now() - self.time).total_seconds()
         if force or elapsed > self._interval:
