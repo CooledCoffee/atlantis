@@ -48,6 +48,8 @@ class Sensor(object):
     
     @property
     def value(self):
+        if not self.available():
+            return None
         sensor = ctx.session.get(SensorModel, self.full_name)
         return json.loads(sensor.value) if sensor is not None else None
     
