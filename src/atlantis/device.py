@@ -60,16 +60,19 @@ class Sensor(object):
         sensor.time = datetime.now()
         
     def available(self):
-        ellapsed = (datetime.now() - self.time).total_seconds()
+        elapsed = self._calc_elapsed()
         threshold = 2.5 * self._interval
-        return ellapsed < threshold
+        return elapsed < threshold
     
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.')
     def update(self, force=False):
-        elapsed = (datetime.now() - self.time).total_seconds()
+        elapsed = self._calc_elapsed()
         if force or elapsed > self._interval - 10:
             self.value = self._retrieve()
+    
+    def _calc_elapsed(self):
+        return (datetime.now() - self.time).total_seconds()
     
     def _retrieve(self):
         raise NotImplementedError()
