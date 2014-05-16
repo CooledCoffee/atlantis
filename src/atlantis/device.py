@@ -69,7 +69,9 @@ class Sensor(object):
     def update(self, force=False):
         elapsed = self._calc_elapsed()
         if force or elapsed > self._interval - 10:
-            self.value = self._retrieve()
+            value = self._retrieve()
+            if value is not None:
+                self.value = value
     
     def _calc_elapsed(self):
         return (datetime.now() - self.time).total_seconds()
