@@ -22,6 +22,37 @@ class GetSetTest(DbTestCase):
             self.assertEqual(25, sensor.value)
             self.assertEqual(datetime(2000, 1, 1, 0, 0, 0), sensor.time)
 
+class AvailableTest(DbTestCase):
+    def setUp(self):
+        super(AvailableTest, self).setUp()
+        self.sensor = Sensor()
+        self.sensor.full_name = 'thermometer.temperature'
+        
+    def test_available(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            session.add(SensorModel(name='thermometer.temperature', value=25, time=datetime.now()))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            available = self.sensor.available()
+            self.assertTrue(available)
+            
+    def test_outdated(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            session.add(SensorModel(name='thermometer.temperature', value=25, time=datetime(2000, 1, 1)))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            available = self.sensor.available()
+            self.assertFalse(available)
+            
+    def test_no_record(self):
+        with self.mysql.dao.SessionContext():
+            available = self.sensor.available()
+            self.assertFalse(available)
+            
 class UpdateTest(DbTestCase):
     def setUp(self):
         super(UpdateTest, self).setUp()

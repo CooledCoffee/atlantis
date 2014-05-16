@@ -57,6 +57,11 @@ class Sensor(object):
         sensor.value = json.dumps(value)
         sensor.time = datetime.now()
         
+    def available(self):
+        ellapsed = (datetime.now() - self.time).total_seconds()
+        threshold = 2.5 * self._interval
+        return ellapsed < threshold
+    
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.')
     def update(self, force=False):
