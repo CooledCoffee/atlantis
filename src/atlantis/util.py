@@ -7,7 +7,9 @@ def calc_name(cls):
     ss = name.split('_')
     return '_'.join(ss[:-1])
 
-def init():
+def init(dao):
+    import db
+    db.dao = dao
     modutil.load_tree('devices')
     modutil.load_tree('rules')
     
