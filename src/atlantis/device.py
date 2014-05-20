@@ -80,9 +80,10 @@ class Sensor(object):
         raise NotImplementedError()
 
 class Controller(Function):
-    def _init(self, group, affects=None):
+    def _init(self, group, order=0, affects=None):
         super(Controller, self)._init()
         self.group = group
+        self.order = order
         self._affects = affects
         self.name = None
         self.full_name = None
