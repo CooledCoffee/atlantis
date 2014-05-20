@@ -26,13 +26,13 @@ class Device(object):
                 obj.name = attr
                 obj.full_name = '%s.%s' % (cls.name, obj.name)
                 obj._device = device
-                cls.sensors.append(attr)
+                cls.sensors.append(obj)
             elif hasattr(obj, 'im_func') and isinstance(obj.im_func, Controller):
                 c = obj.im_func
                 c.name = attr
                 c.full_name = '%s.%s' % (cls.name, c.name)
                 c._device = device
-                cls.controllers.append(attr)
+                cls.controllers.append(obj)
     
 class Sensor(object):
     def __init__(self, interval=60):

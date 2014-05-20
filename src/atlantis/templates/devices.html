@@ -8,18 +8,11 @@
 				<td class="span4" style="padding-bottom: 20px;">
 					<div style="font-size: 16pt; font-weight: bold; margin-bottom: 5px;">{{device.name|capitalize}}</div>
 					{% for sensor in device.sensors %}
-						<div>{{sensor}}: {{device[sensor].value}}</div>
+						<div>{{sensor.name}}: {{sensor.value}}</div>
 					{% endfor %}
 					{% for controller in device.controllers %}
 						<div style="margin-top: 5px">
-							<a href="/devices/controller?device=%22{{device.name}}%22&controller=%22{{controller}}%22" class="btn link-action" style="width: 50px">{{controller}}</a>
-						</div>
-					{% endfor %}
-					{% for group in device.controllers|map(attribute='username') %}
-						<div style="margin-top: 5px">
-							{% for controller in group.list %}
-								<a href="/devices/action?device=%22{{device.name}}%22&action=%22{{action.name}}%22" class="btn link-action" style="width: 50px">{{action.name}}</a>
-							{% endfor %}
+							<a href="/devices/controller?device=%22{{device.name}}%22&controller=%22{{controller.name}}%22" class="btn link-action" style="width: 50px">{{controller.name}}</a>
 						</div>
 					{% endfor %}
 				</td>

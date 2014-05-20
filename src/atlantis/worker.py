@@ -18,7 +18,6 @@ def run():
 def _update_sensors():
     for d in device.devices.values():
         for sensor in d.sensors:
-            sensor = getattr(d, sensor)
             sensor.update()
             
 @log_enter('Updating solution statuses ...')

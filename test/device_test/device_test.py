@@ -18,9 +18,11 @@ class SensorsTest(TestCase):
             humidity = Sensor()
             temperature = Sensor()
         device = TestDevice()
-        self.assertEqual(['humidity', 'temperature'], device.sensors)
-        self.assertEqual('humidity', device.humidity.name)
-        self.assertEqual('test.humidity', device.humidity.full_name)
+        self.assertEqual(2, len(device.sensors))
+        self.assertEqual('humidity', device.sensors[0].name)
+        self.assertEqual('test.humidity', device.sensors[0].full_name)
+        self.assertEqual('temperature', device.sensors[1].name)
+        self.assertEqual('test.temperature', device.sensors[1].full_name)
         
 class ControllersTest(TestCase):
     def test(self):
@@ -33,6 +35,8 @@ class ControllersTest(TestCase):
             def off(self):
                 pass
         device = TestDevice()
-        self.assertEqual(['off', 'on'], device.controllers)
-        self.assertEqual('on', device.on.name)
-        self.assertEqual('test.on', device.on.full_name)
+        self.assertEqual(2, len(device.controllers))
+        self.assertEqual('off', device.controllers[0].name)
+        self.assertEqual('test.off', device.controllers[0].full_name)
+        self.assertEqual('on', device.controllers[1].name)
+        self.assertEqual('test.on', device.controllers[1].full_name)
