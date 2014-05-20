@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.device import Device, Sensor, Controller
-from fixtures2 import TestCase
+from testutil import TestCase
 
 class AffectsTest(TestCase):
     def test(self):

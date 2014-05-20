@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
-from fixtures2 import TestCase
+from fixtures2 import TestCase, PatchesFixture, MoxFixture
 from sqlalchemy_dao.testing import MysqlFixture
 import os
+
+class TestCase(TestCase):
+    def setUp(self):
+        super(TestCase, self).setUp()
+        self.patches = self.useFixture(PatchesFixture())
+        self.mox = self.useFixture(MoxFixture())
 
 class DbTestCase(TestCase):
     def setUp(self):

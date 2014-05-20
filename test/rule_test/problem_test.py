@@ -3,8 +3,7 @@ from atlantis import rule
 from atlantis.db import ProblemModel
 from atlantis.rule import Problem
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures2 import TestCase
-from testutil import DbTestCase
+from testutil import DbTestCase, TestCase
 
 class RegisterTest(TestCase):
     def test(self):

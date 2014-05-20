@@ -2,7 +2,7 @@
 from atlantis import device
 from atlantis.device import Device, Sensor, Controller
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures2 import TestCase
+from testutil import TestCase
 
 class RegisterTest(TestCase):
     def test(self):

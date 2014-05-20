@@ -3,8 +3,7 @@ from atlantis import rule
 from atlantis.db import SolutionModel
 from atlantis.rule import Solution
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures2 import TestCase
-from testutil import DbTestCase
+from testutil import DbTestCase, TestCase
 import json
 
 class RegisterTest(TestCase):

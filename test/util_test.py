@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from fixtures2 import TestCase
+from testutil import TestCase
 
 class ThermometerDevice(object):
     pass

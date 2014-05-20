@@ -4,8 +4,7 @@ from atlantis.db import SensorModel, SolutionModel
 from atlantis.device import Device, Sensor
 from atlantis.rule import Problem, Solution
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures2 import TestCase
-from testutil import DbTestCase
+from testutil import DbTestCase, TestCase
 import json
 
 class UpdateSensorsTest(DbTestCase):

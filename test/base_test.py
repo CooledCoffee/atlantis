@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.base import AutoRegisterType
-from fixtures2 import TestCase
+from testutil import TestCase
 
 class AutoRegisterTypeTest(TestCase):
     def test(self):
