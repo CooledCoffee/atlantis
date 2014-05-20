@@ -11,7 +11,7 @@ class AffectsTest(TestCase):
                 case.updated = True
         class TestDevice(Device):
             power = PowerSensor()
-            @Controller(affects='power')
+            @Controller('power', affects='power')
             def on(self):
                 pass
             

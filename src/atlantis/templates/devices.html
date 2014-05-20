@@ -15,6 +15,13 @@
 							<a href="/devices/controller?device=%22{{device.name}}%22&controller=%22{{controller}}%22" class="btn link-action" style="width: 50px">{{controller}}</a>
 						</div>
 					{% endfor %}
+					{% for group in device.controllers|map(attribute='username') %}
+						<div style="margin-top: 5px">
+							{% for controller in group.list %}
+								<a href="/devices/action?device=%22{{device.name}}%22&action=%22{{action.name}}%22" class="btn link-action" style="width: 50px">{{action.name}}</a>
+							{% endfor %}
+						</div>
+					{% endfor %}
 				</td>
 			{% endfor %}
 		</tr>

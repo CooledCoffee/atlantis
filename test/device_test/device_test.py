@@ -25,11 +25,11 @@ class SensorsTest(TestCase):
 class ControllersTest(TestCase):
     def test(self):
         class TestDevice(Device):
-            @Controller
+            @Controller('power')
             def on(self):
                 pass
             
-            @Controller
+            @Controller('power')
             def off(self):
                 pass
         device = TestDevice()
