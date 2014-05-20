@@ -13,7 +13,7 @@
 					{% for group in device.controllers|groupby('group') %}
 						<div style="margin-top: 5px">
 							{% for controller in group.list|sort(attribute='order') %}
-								<a href="/devices/action?device=%22{{device.name}}%22&controller=%22{{controller.name}}%22" class="btn link-action" style="width: 50px">{{controller.name}}</a>
+								<a href="/devices/controller?device=%22{{device.name}}%22&controller=%22{{controller.name}}%22" class="btn link-action" style="width: 50px">{{controller.name}}</a>
 							{% endfor %}
 						</div>
 					{% endfor %}
