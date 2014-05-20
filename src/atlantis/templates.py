@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from decorated import once
 from jinja2.environment import Environment
 from jinja2.loaders import FileSystemLoader
 import os
 
 env = None
 
-@once
 def init():
     global env
     dirname = os.path.join(os.path.dirname(__file__), 'templates')
@@ -16,3 +14,5 @@ def init():
 def render(template_name, **kw):
     template = env.get_template(template_name)
     return template.render(**kw)
+
+init()

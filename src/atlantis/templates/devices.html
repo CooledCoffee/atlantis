@@ -1,0 +1,31 @@
+{% extends "frame.html" %}
+
+{% block body %}
+<table class="table">
+	{% for row in devices|batch(3) %}
+		<tr>
+			{% for device in row %}
+				<td class="span4" style="padding-bottom: 20px;">
+					<div style="font-size: 16pt; font-weight: bold; margin-bottom: 5px;">{{device.name|capitalize}}</div>
+					{% for sensor in device.sensors %}
+						<div>{{sensor}}: {{device[sensor].value}}</div>
+					{% endfor %}
+					{% for controller in device.controllers %}
+						<div style="margin-top: 5px">
+							<a href="/devices/controller?device=%22{{device.name}}%22&controller=%22{{controller}}%22" class="btn link-action" style="width: 50px">{{controller}}</a>
+						</div>
+					{% endfor %}
+				</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+require(['jquery', 'common/bootstrap-ext'], function($) {
+	$('.link-action').apiLink();
+});
+</script>
+{% endblock %}
