@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Atlantis</title>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" rel="stylesheet" />
+{% block css %}
+{% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.5/require.min.js"></script>
+<script type="text/javascript" src="https://cstudio-static.appspot.com/js/requirejs-config.min.js"></script>
+<script type="text/javascript">
+require(['bootstrap']); // for bootstrap top menu
+</script>
+</head>
+<body>
+<div class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<span class="brand" style="margin-left: 5px; margin-right: 5px">Atlantis</span>
+		<ul class="nav">
+			<li><a href="/devices/home">Devices</a></li>
+		</ul>
+	</div>
+</div>
+<div class="container">
+{% block body %}{% endblock %}
+</div>
+{% block script %}
+{% endblock %}
+</body>
+</html>
