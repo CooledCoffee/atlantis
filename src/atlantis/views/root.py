@@ -2,8 +2,8 @@
 from atlantis import templates, device
 from metaweb import page
 
-@page(default=True)
-def home():
+@page
+def devices():
     devices = device.devices.values()
     devices.sort(key=lambda d: d.name)
     return templates.render('devices.html', devices=devices)
