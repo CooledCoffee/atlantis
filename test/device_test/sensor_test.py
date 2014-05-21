@@ -11,7 +11,7 @@ class SensorTest(DbTestCase):
         super(SensorTest, self).setUp()
         self.sensor = Sensor()
         self.sensor.full_name = 'thermometer.temperature'
-        self.sensor._retrieve = lambda: 25
+        self.sensor.retrieve = lambda: 25
         
 class GetTest(SensorTest):
     def test_success(self):
@@ -113,7 +113,7 @@ class UpdateTest(SensorTest):
         with self.mysql.dao.create_session() as session:
             time = datetime.now() - timedelta(seconds=55)
             session.add(SensorModel(name='thermometer.temperature', value=json.dumps(24), time=time))
-        self.sensor._retrieve = lambda: None
+        self.sensor.retrieve = lambda: None
             
         # test
         with self.mysql.dao.SessionContext():

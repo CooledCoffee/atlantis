@@ -3,13 +3,16 @@ from atlantis.db import SensorModel
 from atlantis.device import Device, Sensor
 from atlantis.views import sensors
 from datetime import datetime
-from decorated.base.dict import Dict
 from fixtures2 import DateTimeFixture
-from testutil import DbTestCase
+from testutil import DbTestCase, TestCase
 import json
 
+class TemperatureSensor(Sensor):
+    def retrieve(self):
+        return 25
+    
 class ThermometerDevice(Device):
-    temperature = Sensor()
+    temperature = TemperatureSensor()
 
 class GetTest(DbTestCase):
     def test(self):
@@ -37,3 +40,7 @@ class SetTest(DbTestCase):
             self.assertEqual(25, json.loads(model.value))
             self.assertEqual(datetime(2000, 1, 1), model.time)
             
+class RetrieveTest(TestCase):
+    def test(self):
+        result = sensors.retrieve('thermometer.temperature')
+        self.assertEqual(25, result)

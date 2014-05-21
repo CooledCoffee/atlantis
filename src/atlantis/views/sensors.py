@@ -4,10 +4,24 @@ from metaweb import api
 
 @api
 def get(name):
-    dname, sname = name.split('.')
-    dev = device.devices[dname]
-    sensor = getattr(dev, sname)
+    sensor = _get_sensor(name)
     return {
         'time': sensor.time,
         'value': sensor.value,
     }
+    
+@api
+def retrieve(name):
+    sensor = _get_sensor(name)
+    return sensor.retrieve()
+
+@api
+def set(name, value):
+    sensor = _get_sensor(name)
+    sensor.value = value
+
+def _get_sensor(name):
+    dname, sname = name.split('.')
+    dev = device.devices[dname]
+    return getattr(dev, sname)
+    

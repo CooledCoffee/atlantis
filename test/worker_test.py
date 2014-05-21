@@ -15,8 +15,8 @@ class UpdateSensorsTest(DbTestCase):
             temperature = Sensor()
         class HydrometerDevice(Device):
             humidity = Sensor()
-        device.devices['thermometer'].temperature._retrieve = lambda: 25
-        device.devices['hydrometer'].humidity._retrieve = lambda: 50
+        device.devices['thermometer'].temperature.retrieve = lambda: 25
+        device.devices['hydrometer'].humidity.retrieve = lambda: 50
         
         # test
         with self.mysql.dao.SessionContext():
