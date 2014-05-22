@@ -11,9 +11,10 @@ def get(name):
     }
     
 @api
-def _retrieve(name):
+def update(name):
     sensor = _get_sensor(name)
-    return sensor._retrieve()
+    sensor.update()
+    return get(name)
 
 @api
 def set(name, value):

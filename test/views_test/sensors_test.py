@@ -40,7 +40,13 @@ class SetTest(DbTestCase):
             self.assertEqual(25, json.loads(model.value))
             self.assertEqual(datetime(2000, 1, 1), model.time)
             
-class RetrieveTest(TestCase):
+class UpdateTest(DbTestCase):
     def test(self):
-        result = sensors._retrieve('thermometer.temperature')
-        self.assertEqual(25, result)
+        # set up
+        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
+        
+        # test
+        with self.mysql.dao.SessionContext():
+            result = sensors.update('thermometer.temperature')
+            self.assertEqual(25, result['value'])
+            self.assertEqual(datetime(2000, 1, 1), result['time'])
