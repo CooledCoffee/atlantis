@@ -6,7 +6,9 @@
 		<tr>
 			{% for device in row %}
 				<td class="span4" style="padding-bottom: 20px;">
-					<div style="font-size: 16pt; font-weight: bold; margin-bottom: 5px;">{{device.name|capitalize}}</div>
+					<a href="/device?name={{device.name}}" style="font-size: 16pt; font-weight: bold; margin-bottom: 5px;">
+						{{device.name|capitalize}}
+					</a>
 					{% for sensor in device.sensors %}
 						<div>{{sensor.name}}: {{sensor.value}}</div>
 					{% endfor %}

@@ -1,0 +1,54 @@
+{% extends "frame.html" %}
+
+{% block body %}
+<h2>{{device.name}}</h2>
+<h3>Sensors</h3>
+<div>
+	<table class="table span6">
+		{% for sensor in device.sensors %}
+			<tr>
+				<td class="span2">{{sensor.name}}</td>
+				<td class="span3">
+					{{sensor.value}}
+					({{sensor.time}})
+				</td>
+				<td class="span1" data-url="/sensors/update?name=%22{{sensor.full_name}}%22">
+					<i class="icon-refresh" style="cursor: pointer"></i>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+	{% for sensor in device.sensors %}
+		<div>
+			{{sensor.name}}: {{sensor.value}}
+			<a href="/sensors/retrieve" class="link-refresh">
+				<i class="icon-refresh"></i>
+			</a>
+		</div>
+	{% endfor %}
+</div>
+<h3>Controllers</h3>
+<div>
+	{% for controller in device.controllers %}
+		<a href="/controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
+	{% endfor %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+require(['jquery', 'common/sdk', 'common/bootstrap-ext'], function($, sdk) {
+	$('.icon-refresh').click(function() {
+		var url = $(this).attr('data-url');
+		var valueTd = $(this).prev('td');
+		valueTd.text('Updating ...');
+		sdk.get(url, function(resp) {
+			valueTd.text(resp.value + ' (' + value.time + ')');
+		});
+		return false;
+	});
+	
+	$('.link-trigger').apiLink();
+});
+</script>
+{% endblock %}
