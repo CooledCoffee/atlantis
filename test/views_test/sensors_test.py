@@ -8,7 +8,7 @@ from testutil import DbTestCase, TestCase
 import json
 
 class TemperatureSensor(Sensor):
-    def retrieve(self):
+    def _retrieve(self):
         return 25
     
 class ThermometerDevice(Device):
@@ -42,5 +42,5 @@ class SetTest(DbTestCase):
             
 class RetrieveTest(TestCase):
     def test(self):
-        result = sensors.retrieve('thermometer.temperature')
+        result = sensors._retrieve('thermometer.temperature')
         self.assertEqual(25, result)

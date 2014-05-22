@@ -11,9 +11,9 @@ def get(name):
     }
     
 @api
-def retrieve(name):
+def _retrieve(name):
     sensor = _get_sensor(name)
-    return sensor.retrieve()
+    return sensor._retrieve()
 
 @api
 def set(name, value):

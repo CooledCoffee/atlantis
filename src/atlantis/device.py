@@ -64,7 +64,7 @@ class Sensor(object):
         threshold = 2.5 * self._interval
         return elapsed < threshold
     
-    def retrieve(self):
+    def _retrieve(self):
         raise NotImplementedError()
 
     @log_enter('Updating sensor {self.full_name} ...')
@@ -72,7 +72,7 @@ class Sensor(object):
     def update(self, force=False):
         elapsed = self._calc_elapsed()
         if force or elapsed > self._interval - 10:
-            value = self.retrieve()
+            value = self._retrieve()
             if value is not None:
                 self.value = value
     
