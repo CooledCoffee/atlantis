@@ -48,11 +48,11 @@ class Solution(object):
         model.data = json.dumps(data) if data is not None else None
         model.applied = True
         
-    def check(self):
+    def check(self, problem):
         model = ctx.session.get(SolutionModel, self.name)
         if model is not None and model.applied:
             return 0
-        return self._fitness()
+        return self._fitness(problem)
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
     def update(self):
@@ -65,6 +65,6 @@ class Solution(object):
     def _apply(self, data):
         raise NotImplementedError()
     
-    def _fitness(self):
+    def _fitness(self, problem):
         raise NotImplementedError()
     

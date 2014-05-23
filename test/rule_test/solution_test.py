@@ -76,7 +76,7 @@ class CheckTest(DbTestCase):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
-            def _fitness(self):
+            def _fitness(self, problem):
                 return 100
         with self.mysql.dao.create_session() as session:
             session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
@@ -84,27 +84,27 @@ class CheckTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.check()
+            fitness = solution.check(None)
         self.assertEqual(100, fitness)
         
     def test_ok_2(self):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
-            def _fitness(self):
+            def _fitness(self, problem):
                 return 100
             
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.check()
+            fitness = solution.check(None)
         self.assertEqual(100, fitness)
         
     def test_not_fit(self):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
-            def _fitness(self):
+            def _fitness(self, problem):
                 return 0
         with self.mysql.dao.create_session() as session:
             session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
@@ -112,14 +112,14 @@ class CheckTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.check()
+            fitness = solution.check(None)
         self.assertEqual(0, fitness)
         
     def test_already_applied(self):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
-            def _fitness(self):
+            def _fitness(self, problem):
                 return 100
         with self.mysql.dao.create_session() as session:
             session.add(SolutionModel(name='OPEN_WINDOW', applied=True))
@@ -127,6 +127,6 @@ class CheckTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.check()
+            fitness = solution.check(None)
         self.assertEqual(0, fitness)
         
