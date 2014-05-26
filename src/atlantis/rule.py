@@ -25,6 +25,12 @@ class Problem(object):
         model = ctx.session.get_or_create(ProblemModel, self.name)
         model.exists = self._exists()
         return model.exists
+    
+    def exists(self):
+        model = ctx.session.get(ProblemModel, self.name)
+        if model is None:
+            return False
+        return model.exists
         
     def _exists(self):
         raise NotImplementedError()

@@ -34,3 +34,41 @@ class CheckTest(DbTestCase):
             model = session.get(ProblemModel, 'TEMPERATURE_TOO_HIGH')
             self.assertTrue(model.exists)
             
+class ExistsTest(DbTestCase):
+    def test_exists(self):
+        # set up
+        class TemperatureTooHighProblem(Problem):
+            pass
+        with self.mysql.dao.create_session() as session:
+            session.add(ProblemModel(name='TEMPERATURE_TOO_HIGH', exists=True))
+            
+        # test
+        problem = TemperatureTooHighProblem()
+        with self.mysql.dao.SessionContext():
+            exists = problem.exists()
+            self.assertTrue(exists)
+            
+    def test_not_exists(self):
+        # set up
+        class TemperatureTooHighProblem(Problem):
+            pass
+        with self.mysql.dao.create_session() as session:
+            session.add(ProblemModel(name='TEMPERATURE_TOO_HIGH', exists=False))
+            
+        # test
+        problem = TemperatureTooHighProblem()
+        with self.mysql.dao.SessionContext():
+            exists = problem.exists()
+            self.assertFalse(exists)
+            
+    def test_no_record(self):
+        # set up
+        class TemperatureTooHighProblem(Problem):
+            pass
+            
+        # test
+        problem = TemperatureTooHighProblem()
+        with self.mysql.dao.SessionContext():
+            exists = problem.exists()
+            self.assertFalse(exists)
+            
