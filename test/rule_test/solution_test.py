@@ -130,3 +130,18 @@ class CheckTest(DbTestCase):
             fitness = solution.check(None)
         self.assertEqual(0, fitness)
         
+    def test_pre_condition_fails(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self, problem):
+                return 100
+            def _precondition(self):
+                return False
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.check(None)
+        self.assertEqual(0, fitness)
+        

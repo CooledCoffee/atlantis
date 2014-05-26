@@ -52,6 +52,8 @@ class Solution(object):
         model = ctx.session.get(SolutionModel, self.name)
         if model is not None and model.applied:
             return 0
+        if not self._precondition():
+            return 0
         return self._fitness(problem)
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
@@ -67,4 +69,7 @@ class Solution(object):
     
     def _fitness(self, problem):
         raise NotImplementedError()
+    
+    def _precondition(self):
+        return True
     
