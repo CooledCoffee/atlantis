@@ -20,15 +20,17 @@ class RegisterTest(TestCase):
 class ApplyTest(DbTestCase):
     def test_simple(self):
         # set up
+        case = self
+        p = object()
         class OpenWindowSolution(Solution):
             targets = []
-            def _apply(self, data):
-                pass
+            def _apply(self, problem, data):
+                case.assertEqual(p, problem)
         
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            solution.apply()
+            solution.apply(p)
         with self.mysql.dao.create_session() as session:
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertTrue(model.applied)
@@ -38,7 +40,7 @@ class ApplyTest(DbTestCase):
         case = self
         class OpenWindowSolution(Solution):
             targets = []
-            def _apply(self, data):
+            def _apply(self, problem, data):
                 case.assertEqual('old data', data)
                 return 'new data'
         with self.mysql.dao.create_session() as session:
@@ -47,7 +49,7 @@ class ApplyTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            solution.apply()
+            solution.apply(None)
         with self.mysql.dao.create_session() as session:
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertTrue(model.applied)
