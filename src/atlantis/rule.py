@@ -19,11 +19,11 @@ class Problem(object):
         problem = cls()
         problems[cls.name] = problem
         
-    @log_enter('[DEBUG] Checking problem {self.name} ...')
+    @log_enter('[DEBUG] Updating problem {self.name} ...')
     @log_return('Found problem {self.name}.', condition='ret')
-    def check(self):
+    def update(self):
         model = ctx.session.get_or_create(ProblemModel, self.name)
-        model.exists = self._exists()
+        model.exists = self._check()
         return model.exists
     
     def exists(self):
@@ -32,7 +32,7 @@ class Problem(object):
             return False
         return model.exists
         
-    def _exists(self):
+    def _check(self):
         raise NotImplementedError()
     
 class Solution(object):
@@ -54,7 +54,7 @@ class Solution(object):
         model.data = json.dumps(data) if data is not None else None
         model.applied = True
         
-    def check(self, problem):
+    def fitness(self, problem):
         model = ctx.session.get(SolutionModel, self.name)
         if model is not None and model.applied:
             return 0
@@ -65,12 +65,12 @@ class Solution(object):
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
     def update(self):
         model = ctx.session.get(SolutionModel, self.name)
-        model.applied = self._applied()
-    
-    def _applied(self):
-        raise NotImplementedError()
+        model.applied = self._check()
     
     def _apply(self, problem, data):
+        raise NotImplementedError()
+    
+    def _check(self):
         raise NotImplementedError()
     
     def _fitness(self, problem):

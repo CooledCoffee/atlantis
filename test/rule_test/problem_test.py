@@ -16,17 +16,17 @@ class RegisterTest(TestCase):
         self.assertIsInstance(rule.problems['TEMPERATURE_TOO_HIGH'], TemperatureTooHighProblem)
         self.assertIsInstance(rule.problems['TEMPERATURE_TOO_LOW'], TemperatureTooLowProblem)
         
-class CheckTest(DbTestCase):
+class UpdateTest(DbTestCase):
     def test(self):
         # set up
         class TemperatureTooHighProblem(Problem):
-            def _exists(self):
+            def _check(self):
                 return True
         problem = TemperatureTooHighProblem()
         
         # test
         with self.mysql.dao.SessionContext():
-            exists = problem.check()
+            exists = problem.update()
             
         # verify
         self.assertTrue(exists)
@@ -35,7 +35,7 @@ class CheckTest(DbTestCase):
             self.assertTrue(model.exists)
             
 class ExistsTest(DbTestCase):
-    def test_exists(self):
+    def test_true(self):
         # set up
         class TemperatureTooHighProblem(Problem):
             pass
@@ -48,7 +48,7 @@ class ExistsTest(DbTestCase):
             exists = problem.exists()
             self.assertTrue(exists)
             
-    def test_not_exists(self):
+    def test_false(self):
         # set up
         class TemperatureTooHighProblem(Problem):
             pass

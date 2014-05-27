@@ -34,11 +34,11 @@ class UpdateSolutionStatusesTest(DbTestCase):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
-            def _applied(self):
+            def _check(self):
                 return True
         class OpenAirConditioningSolution(Solution):
             targets = []
-            def _applied(self):
+            def _check(self):
                 return False
         with self.mysql.dao.create_session() as session:
             session.add(SolutionModel(name='OPEN_WINDOW', applied=True))
@@ -58,14 +58,14 @@ class CheckProblemsTest(TestCase):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
         class TemperatureTooHighProblem(Problem):
-            def check(self):
+            def update(self):
                 return True
         class TemperatureTooLowProblem(Problem):
-            def check(self):
+            def update(self):
                 return False
             
         # test
-        problems = worker._check_problems()
+        problems = worker._update_problems()
         self.assertEqual(1, len(problems))
         self.assertIsInstance(problems[0], TemperatureTooHighProblem)
         

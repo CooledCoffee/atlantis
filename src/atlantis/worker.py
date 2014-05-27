@@ -9,7 +9,7 @@ from mqueue import cron, MINUTELY
 def run():
     _update_sensors()
     _update_solution_statuses()
-    problems = _check_problems()
+    problems = _update_problems()
     for problem in problems:
         solution = _find_best_solution(problem)
         solution.apply()
@@ -30,8 +30,8 @@ def _update_solution_statuses():
         solution.update()
         
 @log_enter('Checking problems ...')
-def _check_problems():
-    return [p for p in rule.problems.values() if p.check()]
+def _update_problems():
+    return [p for p in rule.problems.values() if p.update()]
     
 @log_enter('Solving problem {problem.name} ...')
 @log_return('Found solution {ret.name}.', condition='ret is not None')
