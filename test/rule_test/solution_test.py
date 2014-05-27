@@ -74,7 +74,7 @@ class UpdateTest(DbTestCase):
             self.assertFalse(model.applied)
             
 class FitnessTest(DbTestCase):
-    def test_ok_1(self):
+    def test_ok(self):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
@@ -89,18 +89,35 @@ class FitnessTest(DbTestCase):
             fitness = solution.fitness(None)
         self.assertEqual(100, fitness)
         
-    def test_ok_2(self):
+    def test_true(self):
         # set up
         class OpenWindowSolution(Solution):
             targets = []
             def _fitness(self, problem):
-                return 100
+                return True
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
             
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
             fitness = solution.fitness(None)
         self.assertEqual(100, fitness)
+        
+    def test_false(self):
+        # set up
+        class OpenWindowSolution(Solution):
+            targets = []
+            def _fitness(self, problem):
+                return False
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.fitness(None)
+        self.assertIs(fitness, 0)
         
     def test_not_fit(self):
         # set up

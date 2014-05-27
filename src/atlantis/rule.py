@@ -61,7 +61,12 @@ class Solution(object):
             return 0
         if not self._check_preconditions():
             return 0
-        return self._fitness(problem)
+        fitness = self._fitness(problem)
+        if fitness is True:
+            fitness = 100
+        elif fitness is False:
+            fitness = 0
+        return fitness
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
     def update(self):
