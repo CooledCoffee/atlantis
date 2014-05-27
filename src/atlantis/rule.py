@@ -87,5 +87,5 @@ class Solution(object):
         return True
     
     def _fitness(self, problem):
-        raise NotImplementedError()
+        return True
     
