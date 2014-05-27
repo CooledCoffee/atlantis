@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis import rule
 from atlantis.db import SolutionModel
-from atlantis.rule import Solution
+from atlantis.rule import Solution, Problem
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import DbTestCase, TestCase
 import json
@@ -132,14 +132,16 @@ class FitnessTest(DbTestCase):
             fitness = solution.fitness(None)
         self.assertEqual(0, fitness)
         
-    def test_pre_condition_fails(self):
+    def test_pre_conditions_fail(self):
         # set up
+        class BadAtmosphereProblem(Problem):
+            def exists(self):
+                return True
         class OpenWindowSolution(Solution):
+            preconditions = [BadAtmosphereProblem]
             targets = []
             def _fitness(self, problem):
                 return 100
-            def _precondition(self):
-                return False
             
         # test
         solution = OpenWindowSolution()

@@ -38,6 +38,7 @@ class Problem(object):
 class Solution(object):
     __metaclass__ = AutoRegisterType
     description = None
+    preconditions = []
     targets = None
     
     @classmethod
@@ -58,7 +59,7 @@ class Solution(object):
         model = ctx.session.get(SolutionModel, self.name)
         if model is not None and model.applied:
             return 0
-        if not self._precondition():
+        if not self._check_preconditions():
             return 0
         return self._fitness(problem)
         
@@ -73,9 +74,13 @@ class Solution(object):
     def _check(self):
         raise NotImplementedError()
     
+    def _check_preconditions(self):
+        for problem in self.preconditions:
+            problem = problems[problem.name]
+            if problem.exists():
+                return False
+        return True
+    
     def _fitness(self, problem):
         raise NotImplementedError()
-    
-    def _precondition(self):
-        return True
     
