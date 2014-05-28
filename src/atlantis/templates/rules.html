@@ -1,28 +1,40 @@
 {% extends "frame.html" %}
 
+{% block css %}
+<style>
+.problem {
+	font-size: 14pt;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.solution {
+	margin-left: 30pt;
+}
+</style>
+{% endblock %}
+
 {% block body %}
-{% for problem in problems %}
+{% for item in items %}
 	<div class="span12" style="margin-bottom: 15px">
-		{% if problem.exists() %}
-			<div class="span12" style="margin-bottom: 5px; font-weight: bold; color: red">
-				{{problem.name}}: {{problem.description}}
+		{% if item.problem.exists() %}
+			<div class="span12 problem" style="color: red">
+				{{item.problem.name}}: {{item.problem.description}}
 			</div>
 		{% else %}
-			<div class="span12" style="margin-bottom: 5px">
-				{{problem.name}}: {{problem.description}}
+			<div class="span12 problem">
+				{{item.problem.name}}: {{item.problem.description}}
 			</div>
 		{% endif %}
-		{% for solution in solutions %}
-			{% if type(problem) in solution.targets %}
-				{% if solution.applied %}
-					<div class="span12" style="font-weight: bold; color: #006600">
-						{{solution.name}}: {{solution.description}}
-					</div>
-				{% else %}
-					<div class="span12">
-						{{solution.name}}: {{solution.description}}
-					</div>
-				{% endif %}
+		{% for solution in item.solutions %}
+			{% if solution.applied %}
+				<div class="span12 solution" style="color: #006600">
+					{{solution.name}}: {{solution.description}}
+				</div>
+			{% else %}
+				<div class="span12 solution">
+					{{solution.name}}: {{solution.description}}
+				</div>
 			{% endif %}
 		{% endfor %}
 	</div>

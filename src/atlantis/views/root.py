@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import templates, rule, device as mdevice
+from decorated.base.dict import Dict
 from metaweb import page
 
 @page
@@ -15,6 +16,14 @@ def device(name):
 
 @page
 def rules():
-    return templates.render('rules.html', problems=rule.problems,
-            solutions=rule.solutions)
+    problems = list(rule.problems.values())
+    problems.sort(key=lambda p: p.name)
+    items = [Dict(problem=p) for p in problems]
+    for item in items:
+        item.solutions = []
+        for solution in rule.solutions.values():
+            if type(item.problem) in solution.targets:
+                item.solutions.append(solution)
+        item.solutions.sort(key=lambda s: s.name)
+    return templates.render('rules.html', items=items)
     

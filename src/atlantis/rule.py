@@ -4,7 +4,6 @@ from atlantis.base import AutoRegisterComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return
-import json
 
 problems = {}
 solutions = {}
@@ -33,7 +32,7 @@ class Problem(AutoRegisterComponent):
 class Solution(AutoRegisterComponent):
     description = None
     preconditions = []
-    targets = None
+    targets = []
     
     @classmethod
     def _register(cls):
