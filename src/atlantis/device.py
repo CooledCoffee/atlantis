@@ -14,7 +14,7 @@ class Device(AutoRegisterComponent):
     @classmethod
     def _register(cls):
         cls.name = util.calc_name(cls)
-        device = cls()
+        device = cls.instance()
         devices[cls.name] = device
         cls.sensors = []
         cls.controllers = []

@@ -15,8 +15,7 @@ class Problem(AutoRegisterComponent):
     @classmethod
     def _register(cls):
         cls.name = util.calc_name(cls).upper()
-        problem = cls()
-        problems[cls.name] = problem
+        problems[cls.name] = cls.instance()
         
     @log_enter('[DEBUG] Updating problem {self.name} ...')
     @log_return('Found problem {self.name}.', condition='ret')
@@ -42,8 +41,7 @@ class Solution(AutoRegisterComponent):
     @classmethod
     def _register(cls):
         cls.name = util.calc_name(cls).upper()
-        solution = cls()
-        solutions[cls.name] = solution
+        solutions[cls.name] = cls.instance()
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, problem):
