@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AutoRegisterType
+from atlantis.base import AutoRegisterType, AutoRegisterComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return
@@ -9,8 +9,7 @@ import json
 problems = {}
 solutions = {}
 
-class Problem(object):
-    __metaclass__ = AutoRegisterType
+class Problem(AutoRegisterComponent):
     description = None
     
     @classmethod
@@ -35,8 +34,7 @@ class Problem(object):
     def _check(self):
         raise NotImplementedError()
     
-class Solution(object):
-    __metaclass__ = AutoRegisterType
+class Solution(AutoRegisterComponent):
     description = None
     preconditions = []
     targets = None
