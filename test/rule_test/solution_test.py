@@ -18,13 +18,13 @@ class RegisterTest(TestCase):
         self.assertIsInstance(rule.solutions['OPEN_AIR_CONDITIONING'], OpenAirConditioningSolution)
         
 class ApplyTest(DbTestCase):
-    def test_simple(self):
+    def test(self):
         # set up
         case = self
         p = object()
         class OpenWindowSolution(Solution):
             targets = []
-            def _apply(self, problem, data):
+            def _apply(self, problem):
                 case.assertEqual(p, problem)
         
         # test
@@ -34,26 +34,6 @@ class ApplyTest(DbTestCase):
         with self.mysql.dao.create_session() as session:
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertTrue(model.applied)
-            
-    def test_data(self):
-        # set up
-        case = self
-        class OpenWindowSolution(Solution):
-            targets = []
-            def _apply(self, problem, data):
-                case.assertEqual('old data', data)
-                return 'new data'
-        with self.mysql.dao.create_session() as session:
-            session.add(SolutionModel(name='OPEN_WINDOW', applied=True, data=json.dumps('old data')))
-        
-        # test
-        solution = OpenWindowSolution()
-        with self.mysql.dao.SessionContext():
-            solution.apply(None)
-        with self.mysql.dao.create_session() as session:
-            model = session.get(SolutionModel, 'OPEN_WINDOW')
-            self.assertTrue(model.applied)
-            self.assertEqual('new data', json.loads(model.data))
 
 class UpdateTest(DbTestCase):
     def test(self):
@@ -63,7 +43,7 @@ class UpdateTest(DbTestCase):
             def _check(self):
                 return False
         with self.mysql.dao.create_session() as session:
-            session.add(SolutionModel(name='OPEN_WINDOW', applied=True, data=json.dumps('old data')))
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=True))
             
         # test
         solution = OpenWindowSolution()

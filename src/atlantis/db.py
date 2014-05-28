@@ -17,7 +17,6 @@ class Sensor(Model):
 class Solution(Model):
     name = Column(String, primary_key=True)
     applied = Column(Boolean, nullable=False)
-    data = Column(String)
     
 ProblemModel = Problem
 SensorModel = Sensor

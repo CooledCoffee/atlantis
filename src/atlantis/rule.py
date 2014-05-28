@@ -45,10 +45,8 @@ class Solution(AutoRegisterComponent):
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, problem):
+        self._apply(problem)
         model = ctx.session.get_or_create(SolutionModel, self.name)
-        data = json.loads(model.data) if model.data is not None else None
-        data = self._apply(problem, data)
-        model.data = json.dumps(data) if data is not None else None
         model.applied = True
         
     def fitness(self, problem):
