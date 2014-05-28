@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AutoRegisterType, AutoRegisterComponent
+from atlantis.base import AutoRegisterComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return
@@ -25,10 +25,7 @@ class Problem(AutoRegisterComponent):
         return model.exists
     
     def exists(self):
-        model = ctx.session.get(ProblemModel, self.name)
-        if model is None:
-            return False
-        return model.exists
+        return _get_bool_field(ProblemModel, self.name, 'exists')
         
     def _check(self):
         raise NotImplementedError()
@@ -42,6 +39,9 @@ class Solution(AutoRegisterComponent):
     def _register(cls):
         cls.name = util.calc_name(cls).upper()
         solutions[cls.name] = cls.instance()
+        
+    def applied(self):
+        return _get_bool_field(ProblemModel, self.name, 'applied')
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, problem):
@@ -85,3 +85,8 @@ class Solution(AutoRegisterComponent):
     def _fitness(self, problem):
         return True
     
+def _get_bool_field(model_class, key, field):
+    model = ctx.session.get(model_class, key)
+    if model is None:
+        return False
+    return getattr(model, field)
