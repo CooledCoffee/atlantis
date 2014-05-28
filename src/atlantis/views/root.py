@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis import templates, device
+from atlantis import templates, device, rule
 from metaweb import page
 
 @page
@@ -12,3 +12,9 @@ def devices():
 def device(name):
     dev = device.devices.get(name)
     return templates.render('device.html', device=dev)
+
+@page
+def rules():
+    return templates.render('rules.html', problems=rule.problems,
+            solutions=rule.solutions)
+    

@@ -1,0 +1,30 @@
+{% extends "frame.html" %}
+
+{% block body %}
+{% for problem in problems %}
+	<div class="span12" style="margin-bottom: 15px">
+		{% if problem.exists() %}
+			<div class="span12" style="margin-bottom: 5px; font-weight: bold; color: red">
+				{{problem.name}}: {{problem.description}}
+			</div>
+		{% else %}
+			<div class="span12" style="margin-bottom: 5px">
+				{{problem.name}}: {{problem.description}}
+			</div>
+		{% endif %}
+		{% for solution in solutions %}
+			{% if type(problem) in solution.targets %}
+				{% if solution.applied %}
+					<div class="span12" style="font-weight: bold; color: #006600">
+						{{solution.name}}: {{solution.description}}
+					</div>
+				{% else %}
+					<div class="span12">
+						{{solution.name}}: {{solution.description}}
+					</div>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</div>
+{% endfor %}
+{% endblock %}
