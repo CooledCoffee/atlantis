@@ -12,4 +12,5 @@ def init(dao):
     db.dao = dao
     modutil.load_tree('devices')
     modutil.load_tree('rules')
+    import worker  # @UnusedImport
     

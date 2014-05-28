@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.device import Device, Sensor, Controller
 from atlantis.rule import Problem, Solution
-from atlantis.util import init
+from atlantis import util
 
 Device = Device
 Sensor = Sensor
@@ -10,4 +10,4 @@ controller = Controller
 Problem = Problem
 Solution = Solution
 
-init = init
+init = util.init
