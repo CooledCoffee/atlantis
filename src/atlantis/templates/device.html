@@ -1,37 +1,35 @@
 {% extends "frame.html" %}
 
 {% block body %}
-<h2>{{device.name}}</h2>
-<h3>Sensors</h3>
-<div>
-	<table class="table span6">
-		{% for sensor in device.sensors %}
-			<tr>
-				<td class="span2">{{sensor.name}}</td>
-				<td class="span3">
-					{{sensor.value}}
-					({{sensor.time}})
-				</td>
-				<td class="span1" data-url="/sensors/update?name=%22{{sensor.full_name}}%22">
-					<i class="icon-refresh" style="cursor: pointer"></i>
-				</td>
-			</tr>
+<h2>{{device.name|title}}</h2>
+<div class="row">
+	<div class="span6">
+		<h4>Sensors</h4>
+		<table class="span6">
+			{% for sensor in device.sensors %}
+				<tr>
+					<td class="span1">{{sensor.name}}</td>
+					<td class="span4">
+						{{sensor.value}}
+						({{sensor.time}})
+					</td>
+					<td class="span1">
+						<i class="icon-refresh" style="cursor: pointer" data-url="/sensors/update?name=%22{{sensor.full_name}}%22"></i>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="span6">
+		<h4>Controllers</h4>
+		{% for group in device.controllers|groupby('group') %}
+			<div style="margin-top: 5px">
+				{% for controller in group.list|sort(attribute='order') %}
+					<a href="/controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
+				{% endfor %}
+			</div>
 		{% endfor %}
-	</table>
-	{% for sensor in device.sensors %}
-		<div>
-			{{sensor.name}}: {{sensor.value}}
-			<a href="/sensors/retrieve" class="link-refresh">
-				<i class="icon-refresh"></i>
-			</a>
-		</div>
-	{% endfor %}
-</div>
-<h3>Controllers</h3>
-<div>
-	{% for controller in device.controllers %}
-		<a href="/controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
-	{% endfor %}
+	</div>
 </div>
 {% endblock %}
 
@@ -40,10 +38,10 @@
 require(['jquery', 'common/sdk', 'common/bootstrap-ext'], function($, sdk) {
 	$('.icon-refresh').click(function() {
 		var url = $(this).attr('data-url');
-		var valueTd = $(this).prev('td');
+		var valueTd = $(this).parent().prev('td');
 		valueTd.text('Updating ...');
 		sdk.get(url, function(resp) {
-			valueTd.text(resp.value + ' (' + value.time + ')');
+			valueTd.text(resp.value + ' (' + resp.time + ')');
 		});
 		return false;
 	});

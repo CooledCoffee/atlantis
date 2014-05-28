@@ -13,7 +13,7 @@ def get(name):
 @api
 def update(name):
     sensor = _get_sensor(name)
-    sensor.update()
+    sensor.update(force=True)
     return get(name)
 
 @api
