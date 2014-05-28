@@ -20,6 +20,8 @@ class Problem(AutoRegisterComponent):
     @log_return('Found problem {self.name}.', condition='ret')
     def update(self):
         model = ctx.session.get_or_create(ProblemModel, self.name)
+        if model.exists is None:
+            model.exists = False
         model.exists = self._check()
         return model.exists
     
