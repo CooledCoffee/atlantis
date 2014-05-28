@@ -5,10 +5,9 @@ from testutil import TestCase
 class AffectsTest(TestCase):
     def test(self):
         # set up
-        case = self
         class PowerSensor(Sensor):
             def update(self):
-                case.updated = True
+                AffectsTest.updated = True
         class TestDevice(Device):
             power = PowerSensor()
             @Controller('power', affects='power')

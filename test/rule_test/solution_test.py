@@ -4,7 +4,6 @@ from atlantis.db import SolutionModel
 from atlantis.rule import Solution, Problem
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import DbTestCase, TestCase
-import json
 
 class RegisterTest(TestCase):
     def test(self):
@@ -20,17 +19,17 @@ class RegisterTest(TestCase):
 class ApplyTest(DbTestCase):
     def test(self):
         # set up
-        case = self
-        p = object()
         class OpenWindowSolution(Solution):
             targets = []
             def _apply(self, problem):
-                case.assertEqual(p, problem)
+                ApplyTest.problem = problem
         
         # test
+        problem = object()
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            solution.apply(p)
+            solution.apply(problem)
+        self.assertEqual(problem, self.problem)
         with self.mysql.dao.create_session() as session:
             model = session.get(SolutionModel, 'OPEN_WINDOW')
             self.assertTrue(model.applied)

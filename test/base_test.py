@@ -10,12 +10,11 @@ class SingletonTypeTest(TestCase):
 
 class AutoRegisterTypeTest(TestCase):
     def test(self):
-        self.classes = []
-        case = self
+        AutoRegisterTypeTest.classes = []
         class TestType(AutoRegisterComponent):
             @classmethod
             def _register(cls):
-                case.classes.append(cls)
+                AutoRegisterTypeTest.classes.append(cls)
         class Foo(TestType):
             pass
         class Bar(TestType):
