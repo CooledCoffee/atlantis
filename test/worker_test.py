@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from atlantis import worker, device
 from atlantis.db import SensorModel, SolutionModel
-from atlantis.device import Device, Sensor
-from atlantis.rule import Problem, Solution
+from atlantis.device import AbstractDevice, Sensor
+from atlantis.rule import AbstractProblem, AbstractSolution
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import DbTestCase, TestCase
 import json
@@ -11,9 +11,9 @@ class UpdateSensorsTest(DbTestCase):
     def test(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
-        class ThermometerDevice(Device):
+        class ThermometerDevice(AbstractDevice):
             temperature = Sensor()
-        class HydrometerDevice(Device):
+        class HydrometerDevice(AbstractDevice):
             humidity = Sensor()
         device.devices['thermometer'].temperature._retrieve = lambda: 25
         device.devices['hydrometer'].humidity._retrieve = lambda: 50
@@ -32,11 +32,11 @@ class UpdateSensorsTest(DbTestCase):
 class UpdateSolutionStatusesTest(DbTestCase):
     def test(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _check(self):
                 return True
-        class OpenAirConditioningSolution(Solution):
+        class OpenAirConditioningSolution(AbstractSolution):
             targets = []
             def _check(self):
                 return False
@@ -57,10 +57,10 @@ class CheckProblemsTest(TestCase):
     def test(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
-        class TemperatureTooHighProblem(Problem):
+        class TemperatureTooHighProblem(AbstractProblem):
             def update(self):
                 return True
-        class TemperatureTooLowProblem(Problem):
+        class TemperatureTooLowProblem(AbstractProblem):
             def update(self):
                 return False
             
@@ -73,13 +73,13 @@ class FindBestSolutionTest(TestCase):
     def test_success(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
-        class TemperatureTooHighProblem(Problem):
+        class TemperatureTooHighProblem(AbstractProblem):
             pass
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = [TemperatureTooHighProblem]
             def fitness(self, problem):
                 return 100
-        class OpenAirConditioningSolution(Solution):
+        class OpenAirConditioningSolution(AbstractSolution):
             targets = [TemperatureTooHighProblem]
             def fitness(self, problem):
                 return 0
@@ -92,9 +92,9 @@ class FindBestSolutionTest(TestCase):
     def test_no_solution(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
-        class TemperatureTooHighProblem(Problem):
+        class TemperatureTooHighProblem(AbstractProblem):
             pass
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = [TemperatureTooHighProblem]
             def fitness(self, problem):
                 return 0

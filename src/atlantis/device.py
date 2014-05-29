@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AutoRegisterType, AutoRegisterComponent
+from atlantis.base import AbstractComponent
 from atlantis.db import SensorModel
 from datetime import datetime
 from decorated import Function
@@ -10,7 +10,7 @@ import json
 
 devices = {}
 
-class Device(AutoRegisterComponent):
+class AbstractDevice(AbstractComponent):
     @classmethod
     def _register(cls):
         cls.name = util.calc_name(cls)

@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import Singleton, AutoRegisterComponent
+from atlantis.base import Singleton, AbstractComponent
 from testutil import TestCase
 
-class SingletonTypeTest(TestCase):
-    def test(self):
-        class TestType(Singleton):
+class SingletonTest(TestCase):
+    def test_normal(self):
+        class TestSingleton(Singleton):
             pass
-        self.assertIsInstance(TestType.instance(), TestType)
+        self.assertIsInstance(TestSingleton.instance(), TestSingleton)
+        
+    def test_abstract(self):
+        class AbstractSingleton(Singleton):
+            pass
+        self.assertIsNone(AbstractComponent.instance())
 
-class AutoRegisterTypeTest(TestCase):
+class AbstractComponentTest(TestCase):
     def test(self):
-        AutoRegisterTypeTest.classes = []
-        class TestType(AutoRegisterComponent):
+        AbstractComponentTest.classes = []
+        class TestType(AbstractComponent):
             @classmethod
             def _register(cls):
-                AutoRegisterTypeTest.classes.append(cls)
+                AbstractComponentTest.classes.append(cls)
         class Foo(TestType):
             pass
         class Bar(TestType):

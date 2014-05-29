@@ -3,7 +3,7 @@
 class SingletonType(type):
     def __init__(self, name, bases, attrs):
         super(SingletonType, self).__init__(name, bases, attrs)
-        self._instance = self()
+        self._instance = None if self._is_abstract() else self()
         
 class Singleton(object):
     __metaclass__ = SingletonType
@@ -11,6 +11,10 @@ class Singleton(object):
     @classmethod
     def instance(cls):
         return cls._instance
+    
+    @classmethod
+    def _is_abstract(cls):
+        return cls.__name__.startswith('Abstract')
 
 class AutoRegisterType(SingletonType):
     def __init__(self, name, bases, attrs):
@@ -18,7 +22,7 @@ class AutoRegisterType(SingletonType):
         if '_register' not in self.__dict__:
             self._register()
     
-class AutoRegisterComponent(Singleton):
+class AbstractComponent(Singleton):
     __metaclass__ = AutoRegisterType
     
     @classmethod

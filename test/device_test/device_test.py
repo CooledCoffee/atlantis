@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 from atlantis import device
-from atlantis.device import Device, Sensor, Controller
+from atlantis.device import Sensor, Controller, AbstractDevice
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import TestCase
 
 class RegisterTest(TestCase):
     def test(self):
         self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
-        class TestDevice(Device):
+        class TestDevice(AbstractDevice):
             humidity = Sensor()
             temperature = Sensor()
         self.assertEqual(1, len(device.devices))
         
 class SensorsTest(TestCase):
     def test(self):
-        class TestDevice(Device):
+        class TestDevice(AbstractDevice):
             humidity = Sensor()
             temperature = Sensor()
         device = TestDevice()
@@ -26,7 +26,7 @@ class SensorsTest(TestCase):
         
 class ControllersTest(TestCase):
     def test(self):
-        class TestDevice(Device):
+        class TestDevice(AbstractDevice):
             @Controller('power')
             def on(self):
                 pass

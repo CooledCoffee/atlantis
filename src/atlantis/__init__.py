@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import Device, Sensor, Controller
-from atlantis.rule import Problem, Solution
+from atlantis.device import AbstractDevice, Sensor, Controller
+from atlantis.rule import AbstractProblem, AbstractSolution
 from atlantis import util
 
-Device = Device
+AbstractDevice = AbstractDevice
 Sensor = Sensor
 controller = Controller
 
-Problem = Problem
-Solution = Solution
+AbstractProblem = AbstractProblem
+AbstractSolution = AbstractSolution
 
 init = util.init

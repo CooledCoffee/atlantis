@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import rule
 from atlantis.db import ProblemModel
-from atlantis.rule import Problem
 from testutil import DbTestCase
 
 class ExistsTest(DbTestCase):

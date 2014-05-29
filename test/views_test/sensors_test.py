@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import SensorModel
-from atlantis.device import Device, Sensor
+from atlantis.device import AbstractDevice, Sensor
 from atlantis.views import sensors
 from datetime import datetime
 from fixtures2 import DateTimeFixture
-from testutil import DbTestCase, TestCase
+from testutil import DbTestCase
 import json
 
 class TemperatureSensor(Sensor):
     def _retrieve(self):
         return 25
     
-class ThermometerDevice(Device):
+class ThermometerDevice(AbstractDevice):
     temperature = TemperatureSensor()
 
 class GetTest(DbTestCase):

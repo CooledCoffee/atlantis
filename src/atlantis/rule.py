@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AutoRegisterComponent
+from atlantis.base import AbstractComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return
@@ -8,7 +8,7 @@ from loggingd import log_enter, log_return
 problems = {}
 solutions = {}
 
-class Problem(AutoRegisterComponent):
+class AbstractProblem(AbstractComponent):
     description = None
     
     @classmethod
@@ -31,10 +31,10 @@ class Problem(AutoRegisterComponent):
     def _check(self):
         raise NotImplementedError()
     
-class Solution(AutoRegisterComponent):
+class AbstractSolution(AbstractComponent):
     description = None
     preconditions = []
-    targets = []
+    targets = None
     
     @classmethod
     def _register(cls):

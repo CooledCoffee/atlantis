@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from atlantis import rule
 from atlantis.db import SolutionModel
-from atlantis.rule import Solution, Problem
+from atlantis.rule import AbstractSolution, AbstractProblem
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import DbTestCase, TestCase
 
 class RegisterTest(TestCase):
     def test(self):
         self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
-        class OpenAirConditioningSolution(Solution):
+        class OpenAirConditioningSolution(AbstractSolution):
             targets = []
         self.assertEqual(2, len(rule.solutions))
         self.assertIsInstance(rule.solutions['OPEN_WINDOW'], OpenWindowSolution)
@@ -19,7 +19,7 @@ class RegisterTest(TestCase):
 class ApplyTest(DbTestCase):
     def test(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _apply(self, problem):
                 ApplyTest.problem = problem
@@ -37,7 +37,7 @@ class ApplyTest(DbTestCase):
 class UpdateTest(DbTestCase):
     def test(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _check(self):
                 return False
@@ -55,7 +55,7 @@ class UpdateTest(DbTestCase):
 class FitnessTest(DbTestCase):
     def test_default(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             
         # test
@@ -66,7 +66,7 @@ class FitnessTest(DbTestCase):
         
     def test_number(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _fitness(self, problem):
                 return 100
@@ -79,7 +79,7 @@ class FitnessTest(DbTestCase):
         
     def test_true(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _fitness(self, problem):
                 return True
@@ -94,7 +94,7 @@ class FitnessTest(DbTestCase):
         
     def test_false(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _fitness(self, problem):
                 return False
@@ -109,7 +109,7 @@ class FitnessTest(DbTestCase):
         
     def test_not_fit(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _fitness(self, problem):
                 return 0
@@ -124,7 +124,7 @@ class FitnessTest(DbTestCase):
         
     def test_already_applied(self):
         # set up
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             targets = []
             def _fitness(self, problem):
                 return 100
@@ -139,10 +139,10 @@ class FitnessTest(DbTestCase):
         
     def test_pre_conditions_fail(self):
         # set up
-        class BadAtmosphereProblem(Problem):
+        class BadAtmosphereProblem(AbstractProblem):
             def exists(self):
                 return True
-        class OpenWindowSolution(Solution):
+        class OpenWindowSolution(AbstractSolution):
             preconditions = [BadAtmosphereProblem]
             targets = []
             def _fitness(self, problem):

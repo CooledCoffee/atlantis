@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import Device, Controller
+from atlantis.device import AbstractDevice, Controller
 from atlantis.views import controllers
 from testutil import TestCase
 
-class SpeakerDevice(Device):
+class SpeakerDevice(AbstractDevice):
     @Controller('power')
     def on(self):
         SpeakerDevice.power = True
