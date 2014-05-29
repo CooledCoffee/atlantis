@@ -68,7 +68,7 @@ class Solution(AutoRegisterComponent):
         model = ctx.session.get(SolutionModel, self.name)
         model.applied = self._check()
     
-    def _apply(self, problem, data):
+    def _apply(self, problem):
         raise NotImplementedError()
     
     def _check(self):

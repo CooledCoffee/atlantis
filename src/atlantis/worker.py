@@ -5,14 +5,15 @@ from decorated.base.context import ctx
 from loggingd import log_enter, log_return
 from mqueue import cron, MINUTELY
 
-@cron(MINUTELY)
+#@cron(MINUTELY)
 def run():
     _update_sensors()
     _update_solution_statuses()
     problems = _update_problems()
     for problem in problems:
         solution = _find_best_solution(problem)
-        solution.apply()
+        if solution is not None:
+            solution.apply(problem)
 
 @log_enter('Updating sensors ...')
 def _update_sensors():
