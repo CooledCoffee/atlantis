@@ -16,13 +16,13 @@ class SingletonTest(TestCase):
 class AbstractComponentTest(TestCase):
     def test(self):
         AbstractComponentTest.classes = []
-        class TestType(AbstractComponent):
+        class AbstractDevice(AbstractComponent):
             @classmethod
             def _register(cls):
                 AbstractComponentTest.classes.append(cls)
-        class Foo(TestType):
+        class FooDevice(AbstractDevice):
             pass
-        class Bar(TestType):
+        class BarDevice(AbstractDevice):
             pass
-        self.assertEqual([Foo, Bar], self.classes)
+        self.assertEqual([FooDevice, BarDevice], self.classes)
         

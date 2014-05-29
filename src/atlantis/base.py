@@ -19,7 +19,7 @@ class Singleton(object):
 class AutoRegisterType(SingletonType):
     def __init__(self, name, bases, attrs):
         super(AutoRegisterType, self).__init__(name, bases, attrs)
-        if '_register' not in self.__dict__:
+        if not self._is_abstract():
             self._register()
     
 class AbstractComponent(Singleton):
