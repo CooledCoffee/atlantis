@@ -3,7 +3,7 @@ from atlantis import util
 from atlantis.base import AbstractComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
-from loggingd import log_enter, log_return
+from loggingd import log_enter, log_return, log_and_ignore_error
 
 problems = {}
 solutions = {}
@@ -18,6 +18,7 @@ class AbstractProblem(AbstractComponent):
         
     @log_enter('[DEBUG] Updating problem {self.name} ...')
     @log_return('Found problem {self.name}.', condition='ret')
+    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
     def update(self):
         model = ctx.session.get_or_create(ProblemModel, self.name)
         if model.exists is None:
@@ -64,6 +65,7 @@ class AbstractSolution(AbstractComponent):
         return fitness
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
+    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
     def update(self):
         model = ctx.session.get(SolutionModel, self.name)
         model.applied = self._check()

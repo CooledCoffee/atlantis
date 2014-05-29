@@ -66,7 +66,7 @@ class Sensor(object):
         raise NotImplementedError()
 
     @log_enter('Updating sensor {self.full_name} ...')
-    @log_and_ignore_error('Failed to update sensor {self.full_name}.')
+    @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
     def update(self, force=False):
         elapsed = self._calc_elapsed()
         if force or elapsed > self._interval - 10:
