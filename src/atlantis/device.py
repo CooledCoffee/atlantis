@@ -90,8 +90,8 @@ class Controller(Function):
     @log_enter('Triggering controller {self.full_name} ...')
     def _call(self, *args, **kw):
         result = super(Controller, self)._call(*args, **kw)
-        if self._affects:
+        if self._affects is not None:
             prop = getattr(self._device, self._affects)
-            prop.update()
+            prop.update(force=True)
         return result
     
