@@ -6,8 +6,8 @@ class AffectsTest(TestCase):
     def test(self):
         # set up
         class PowerSensor(Sensor):
-            def update(self):
-                AffectsTest.updated = True
+            def update(self, force=False):
+                AffectsTest.force = force
         class TestDevice(AbstractDevice):
             power = PowerSensor()
             @Controller('power', affects='power')
@@ -17,4 +17,4 @@ class AffectsTest(TestCase):
         # test
         device = TestDevice()
         device.on()
-        self.assertTrue(self.updated)
+        self.assertTrue(self.force)
