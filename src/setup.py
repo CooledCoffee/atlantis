@@ -7,22 +7,29 @@ setup(
     author='Mengchen LEE',
     author_email='CooledCoffee@gmail.com',
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Topic :: Software Development :: Libraries',
     ],
-    description='Decorator framework and common decorators for python.',
+    description='Smart furniture framework.',
     extras_require={
-        'test': ['fixtures'],
+        'test': ['fixtures2'],
     },
     install_requires=[
+        'decorated',
+        'inflection',
+        'loggingd',
+        'metaweb',
+        'mqueue',
     ],
     packages=[
         'atlantis',
         'atlantis.views',
     ],
-    url='https://github.com/CooledCoffee/decorated/',
+    package_data={
+        'atlantis': ['templates/*.html'],
+    },
+    url='https://github.com/CooledCoffee/atlantis/',
 )
