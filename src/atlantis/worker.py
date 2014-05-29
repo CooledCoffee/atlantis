@@ -5,7 +5,7 @@ from decorated.base.context import ctx
 from loggingd import log_enter, log_return
 from mqueue import cron, MINUTELY
 
-#@cron(MINUTELY)
+@cron(MINUTELY)
 def run():
     _update_sensors()
     _update_solution_statuses()
