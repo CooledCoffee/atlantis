@@ -1,12 +1,28 @@
 {% extends "frame.html" %}
 
+{% block css %}
+<style>
+.link-device {
+	font-size: 16pt;
+	font-weight: bold;
+	margin-bottom: 5px;
+	text-decoration: none;
+	color: #005580;
+}
+
+a:hover {
+	text-decoration: none;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <table class="table">
 	{% for row in devices|batch(3) %}
 		<tr>
 			{% for device in row %}
 				<td class="span4" style="padding-bottom: 20px;">
-					<a href="/device?name={{device.name}}" style="font-size: 16pt; font-weight: bold; margin-bottom: 5px;">
+					<a href="/device?name={{device.name}}" class="link-device">
 						{{device.name|capitalize}}
 					</a>
 					{% for sensor in device.sensors %}
