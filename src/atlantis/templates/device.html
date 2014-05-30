@@ -14,6 +14,7 @@
 						({{sensor.time}})
 					</td>
 					<td class="span1">
+						<i class="icon-edit" style="cursor: pointer" data-url="/sensors/set?name=%22{{sensor.full_name}}%22"></i>
 						<i class="icon-refresh" style="cursor: pointer" data-url="/sensors/update?name=%22{{sensor.full_name}}%22"></i>
 					</td>
 				</tr>
@@ -31,11 +32,48 @@
 		{% endfor %}
 	</div>
 </div>
+<div id="dialog" class="modal fade span6">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">New Value</h4>
+			</div>
+			<div class="modal-body">
+				<input name="value" style="width: 99%" />
+			</div>
+			<div class="modal-footer">
+				<button id="cancelButton" class="btn btn-default" style="width: 70px" data-dismiss="modal">Cancel</button>
+				<button id="okButton" class="btn btn-primary" style="width: 70px">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 {% block script %}
 <script type="text/javascript">
-require(['jquery', 'common/sdk', 'common/bootstrap-ext'], function($, sdk) {
+require(['jquery', 'common/sdk', 'common/util', 'common/bootstrap-ext'], function($, sdk, util) {
+	var dialog = $('#dialog');
+	var valueInput = dialog.find('input[name=value]');
+	var url = null;
+	$('.icon-edit').click(function() {
+		dialog.modal();
+		valueInput.focus();
+		url = $(this).attr('data-url');
+		return false;
+	});
+	valueInput.enter(function() {
+		$('#okButton').click();
+	});
+	$('#okButton').click(function() {
+		url += '&value=' + valueInput.val();
+		sdk.get(url, function(resp) {
+			util.refresh();
+		});
+		dialog.modal('hide');
+		return false;
+	});
+	
 	$('.icon-refresh').click(function() {
 		var url = $(this).attr('data-url');
 		var valueTd = $(this).parent().prev('td');
