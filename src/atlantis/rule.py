@@ -20,11 +20,10 @@ class AbstractProblem(AbstractComponent):
     @log_return('Found problem {self.name}.', condition='ret')
     @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
     def update(self):
+        exists = self._check()
         model = ctx.session.get_or_create(ProblemModel, self.name)
-        if model.exists is None:
-            model.exists = False
-        model.exists = self._check()
-        return model.exists
+        model.exists = exists
+        return exists
     
     def exists(self):
         return _get_bool_field(ProblemModel, self.name, 'exists')
