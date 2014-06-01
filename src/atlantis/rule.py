@@ -42,7 +42,7 @@ class AbstractSolution(AbstractComponent):
         solutions[cls.name] = cls.instance()
         
     def applied(self):
-        return _get_bool_field(ProblemModel, self.name, 'applied')
+        return _get_bool_field(SolutionModel, self.name, 'applied')
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, problem):
