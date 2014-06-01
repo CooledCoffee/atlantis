@@ -23,11 +23,7 @@ def _update_sensors():
             
 @log_enter('Updating solution statuses ...')
 def _update_solution_statuses():
-    models = ctx.session.query(SolutionModel) \
-            .filter(SolutionModel.applied == True) \
-            .all()
-    for model in models:
-        solution = rule.solutions[model.name]
+    for solution in rule.solutions.values():
         solution.update()
         
 @log_enter('Checking problems ...')
