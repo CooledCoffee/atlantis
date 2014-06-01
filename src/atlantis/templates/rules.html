@@ -27,7 +27,7 @@
 			</div>
 		{% endif %}
 		{% for solution in item.solutions %}
-			{% if solution.applied %}
+			{% if solution.applied() %}
 				<div class="span12 solution" style="color: #006600">
 					{{solution.name}}: {{solution.description}}
 				</div>
