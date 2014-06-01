@@ -16,7 +16,7 @@
 
 {% block body %}
 {% for item in items %}
-	<div class="span12" style="margin-bottom: 15px">
+	<div class="span12" style="margin-bottom: 30px">
 		{% if item.problem.exists() %}
 			<div class="span12 problem" style="color: red">
 				{{item.problem.name}}: {{item.problem.description}}
@@ -28,11 +28,11 @@
 		{% endif %}
 		{% for solution in item.solutions %}
 			{% if solution.applied() %}
-				<div class="span12 solution" style="color: #006600">
+				<div class="span12 solution" style="color: #006600; font-weight: bold">
 					{{solution.name}}: {{solution.description}}
 				</div>
 			{% else %}
-				<div class="span12 solution">
+				<div class="span12 solution" style="color: gray">
 					{{solution.name}}: {{solution.description}}
 				</div>
 			{% endif %}
