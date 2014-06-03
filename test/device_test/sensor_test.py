@@ -83,7 +83,7 @@ class AvailableTest(SensorTest):
             self.assertFalse(available)
             
 class UpdateTest(SensorTest):
-    def test_expired(self):
+    def test_normal(self):
         # test
         with self.mysql.dao.SessionContext():
             self.sensor.update()
@@ -92,6 +92,23 @@ class UpdateTest(SensorTest):
         with self.mysql.dao.create_session() as session:
             model = session.get(SensorModel, 'thermometer.temperature')
             self.assertEqual(25, json.loads(model.value))
+            self.assertEqual(0, model.error_rate)
+            
+    def test_error(self):
+        # set up
+        def _retrieve():
+            raise Exception()
+        self.sensor._retrieve = _retrieve
+        
+        # test
+        with self.mysql.dao.SessionContext():
+            self.sensor.update()
+            
+        # verify
+        with self.mysql.dao.create_session() as session:
+            model = session.get(SensorModel, 'thermometer.temperature')
+            self.assertIsNone(json.loads(model.value))
+            self.assertEqual(0.000694444, model.error_rate)
     
     def test_almost_expired(self):
         # set up
