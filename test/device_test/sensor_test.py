@@ -125,22 +125,6 @@ class UpdateTest(SensorTest):
             model = session.get(SensorModel, 'thermometer.temperature')
             self.assertEqual(25, json.loads(model.value))
             
-    def test_no_update(self):
-        # set up
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=55)
-            session.add(SensorModel(name='thermometer.temperature', value=json.dumps(24), time=time))
-        self.sensor._retrieve = lambda: None
-            
-        # test
-        with self.mysql.dao.SessionContext():
-            self.sensor.update()
-            
-        # verify
-        with self.mysql.dao.create_session() as session:
-            model = session.get(SensorModel, 'thermometer.temperature')
-            self.assertEqual(24, json.loads(model.value))
-    
     def test_not_expired(self):
         # set up
         with self.mysql.dao.create_session() as session:
@@ -168,4 +152,20 @@ class UpdateTest(SensorTest):
         with self.mysql.dao.create_session() as session:
             model = session.get(SensorModel, 'thermometer.temperature')
             self.assertEqual(25, json.loads(model.value))
+            
+    def test_none_interval(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            session.add(SensorModel(name='thermometer.temperature', value=json.dumps(24), time=datetime(2000, 1, 1)))
+        self.sensor.interval = None
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            self.sensor.update()
+            
+        # verify
+        with self.mysql.dao.create_session() as session:
+            model = session.get(SensorModel, 'thermometer.temperature')
+            self.assertEqual(24, json.loads(model.value))
+            self.assertEqual(datetime(2000, 1, 1), model.time)
             

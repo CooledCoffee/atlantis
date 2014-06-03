@@ -67,11 +67,11 @@ class Sensor(object):
     @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
     def update(self, force=False):
         try:
+            if self.interval is None:
+                return
             elapsed = self._calc_elapsed()
             if force or elapsed > self.interval - 10:
-                value = self._retrieve()
-                if value is not None:
-                    self.value = value
+                self.value = self._retrieve()
             sensor = self._get_model()
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, False)
         except:
