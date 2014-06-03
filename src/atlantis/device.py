@@ -38,7 +38,7 @@ class Sensor(object):
         self.name = None
         self.full_name = None
         self._device = None
-        self._interval = interval
+        self.interval = interval
         
     @property
     def time(self):
@@ -60,7 +60,7 @@ class Sensor(object):
         
     def available(self):
         elapsed = self._calc_elapsed()
-        threshold = 2.5 * self._interval
+        threshold = 2.5 * self.interval
         return elapsed < threshold
     
     @log_enter('Updating sensor {self.full_name} ...')
@@ -68,15 +68,15 @@ class Sensor(object):
     def update(self, force=False):
         try:
             elapsed = self._calc_elapsed()
-            if force or elapsed > self._interval - 10:
+            if force or elapsed > self.interval - 10:
                 value = self._retrieve()
                 if value is not None:
                     self.value = value
             sensor = self._get_model()
-            sensor.error_rate = _calc_error_rate(sensor.error_rate, self._interval, False)
+            sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, False)
         except:
             sensor = self._get_model(create=True)
-            sensor.error_rate = _calc_error_rate(sensor.error_rate, self._interval, True)
+            sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, True)
     
     def _calc_elapsed(self):
         return (datetime.now() - self.time).total_seconds()

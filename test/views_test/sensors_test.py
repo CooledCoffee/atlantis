@@ -19,11 +19,17 @@ class GetTest(DbTestCase):
         # set up
         self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
         with self.mysql.dao.create_session() as session:
-            session.add(SensorModel(name='thermometer.temperature', value=json.dumps(25), time=datetime(2000, 1, 1)))
+            sensor = SensorModel(name='thermometer.temperature',
+                    error_rate=0.01,
+                    value=json.dumps(25),
+                    time=datetime(2000, 1, 1))
+            session.add(sensor)
             
         # test
         with self.mysql.dao.SessionContext():
             result = sensors.get('thermometer.temperature')
+        self.assertEqual(0.01, result['error_rate'])
+        self.assertEqual(60, result['interval'])
         self.assertEqual(datetime(2000, 1, 1), result['time'])
         self.assertEqual(25, result['value'])
     
