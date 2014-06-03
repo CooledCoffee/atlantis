@@ -11,6 +11,7 @@ def all():
         for sensor in dev.sensors:
             result = get(sensor.full_name)
             results.append(result)
+    results.sort(key=lambda r: r['name'])
     return results
 
 @api
