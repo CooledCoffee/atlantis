@@ -5,11 +5,21 @@ from decorated.base.context import ctx
 from metaweb import api
 
 @api
+def all():
+    results = []
+    for dev in device.devices.values():
+        for sensor in dev.sensors:
+            result = get(sensor.full_name)
+            results.append(result)
+    return results
+
+@api
 def get(name):
     sensor = _get_sensor(name)
     model = ctx.session.get(SensorModel, name)
     return {
         'error_rate': model.error_rate,
+        'name': name,
         'interval': sensor.interval,
         'time': sensor.time,
         'value': sensor.value,
