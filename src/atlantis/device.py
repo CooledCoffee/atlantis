@@ -59,6 +59,8 @@ class Sensor(object):
         sensor.time = datetime.now()
         
     def available(self):
+        if self.interval is None:
+            return True
         elapsed = self._calc_elapsed()
         threshold = 2.5 * self.interval
         return elapsed < threshold
