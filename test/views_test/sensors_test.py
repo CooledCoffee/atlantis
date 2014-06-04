@@ -16,9 +16,9 @@ class GetTest(DbTestCase):
             def _retrieve(self):
                 return 25
         class ThermometerDevice(AbstractDevice):
-            temperature = TemperatureSensor()
+            room = TemperatureSensor()
         with self.mysql.dao.create_session() as session:
-            sensor = SensorModel(name='thermometer.temperature',
+            sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
                     value=json.dumps(25),
                     time=datetime(2000, 1, 1))
@@ -26,8 +26,8 @@ class GetTest(DbTestCase):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = sensors.get('thermometer.temperature')
-        self.assertEqual('thermometer.temperature', result['name'])
+            result = sensors.get('thermometer.room')
+        self.assertEqual('thermometer.room', result['name'])
         self.assertEqual(0.01, result['error_rate'])
         self.assertEqual(60, result['interval'])
         self.assertEqual(datetime(2000, 1, 1), result['time'])
@@ -42,9 +42,9 @@ class AllTest(DbTestCase):
             def _retrieve(self):
                 return 25
         class ThermometerDevice(AbstractDevice):
-            temperature = TemperatureSensor()
+            room = TemperatureSensor()
         with self.mysql.dao.create_session() as session:
-            sensor = SensorModel(name='thermometer.temperature',
+            sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
                     value=json.dumps(25),
                     time=datetime(2000, 1, 1))
@@ -68,13 +68,13 @@ class SetTest(DbTestCase):
             def _retrieve(self):
                 return 25
         class ThermometerDevice(AbstractDevice):
-            temperature = TemperatureSensor()
+            room = TemperatureSensor()
         
         # test
         with self.mysql.dao.SessionContext():
-            sensors.set('thermometer.temperature', 25)
+            sensors.set('thermometer.room', 25)
         with self.mysql.dao.create_session() as session:
-            model = session.get(SensorModel, 'thermometer.temperature')
+            model = session.get(SensorModel, 'thermometer.room')
             self.assertEqual(25, json.loads(model.value))
             self.assertEqual(datetime(2000, 1, 1), model.time)
             
@@ -87,10 +87,10 @@ class UpdateTest(DbTestCase):
             def _retrieve(self):
                 return 25
         class ThermometerDevice(AbstractDevice):
-            temperature = TemperatureSensor()
+            room = TemperatureSensor()
         
         # test
         with self.mysql.dao.SessionContext():
-            result = sensors.update('thermometer.temperature')
+            result = sensors.update('thermometer.room')
             self.assertEqual(25, result['value'])
             self.assertEqual(datetime(2000, 1, 1), result['time'])

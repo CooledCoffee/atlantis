@@ -7,26 +7,26 @@ from testutil import TestCase
 class RegisterTest(TestCase):
     def test(self):
         self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
-        class TestDevice(AbstractDevice):
-            humidity = Sensor()
-            temperature = Sensor()
+        class ThermometerDevice(AbstractDevice):
+            outer = Sensor()
+            room = Sensor()
         self.assertEqual(1, len(device.devices))
         
 class SensorsTest(TestCase):
     def test(self):
-        class TestDevice(AbstractDevice):
-            humidity = Sensor()
-            temperature = Sensor()
-        device = TestDevice()
+        class ThermometerDevice(AbstractDevice):
+            outer = Sensor()
+            room = Sensor()
+        device = ThermometerDevice()
         self.assertEqual(2, len(device.sensors))
-        self.assertEqual('humidity', device.sensors[0].name)
-        self.assertEqual('test.humidity', device.sensors[0].full_name)
-        self.assertEqual('temperature', device.sensors[1].name)
-        self.assertEqual('test.temperature', device.sensors[1].full_name)
+        self.assertEqual('outer', device.sensors[0].name)
+        self.assertEqual('thermometer.outer', device.sensors[0].full_name)
+        self.assertEqual('room', device.sensors[1].name)
+        self.assertEqual('thermometer.room', device.sensors[1].full_name)
         
 class ControllersTest(TestCase):
     def test(self):
-        class TestDevice(AbstractDevice):
+        class SpeakerDevice(AbstractDevice):
             @Controller('power')
             def on(self):
                 pass
@@ -34,9 +34,9 @@ class ControllersTest(TestCase):
             @Controller('power')
             def off(self):
                 pass
-        device = TestDevice()
+        device = SpeakerDevice()
         self.assertEqual(2, len(device.controllers))
         self.assertEqual('off', device.controllers[0].name)
-        self.assertEqual('test.off', device.controllers[0].full_name)
+        self.assertEqual('speaker.off', device.controllers[0].full_name)
         self.assertEqual('on', device.controllers[1].name)
-        self.assertEqual('test.on', device.controllers[1].full_name)
+        self.assertEqual('speaker.on', device.controllers[1].full_name)

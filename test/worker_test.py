@@ -12,11 +12,11 @@ class UpdateSensorsTest(DbTestCase):
         # set up
         self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
         class ThermometerDevice(AbstractDevice):
-            temperature = Sensor()
+            room = Sensor()
         class HydrometerDevice(AbstractDevice):
-            humidity = Sensor()
-        device.devices['thermometer'].temperature._retrieve = lambda: 25
-        device.devices['hydrometer'].humidity._retrieve = lambda: 50
+            room = Sensor()
+        device.devices['thermometer'].room._retrieve = lambda: 25
+        device.devices['hydrometer'].room._retrieve = lambda: 50
         
         # test
         with self.mysql.dao.SessionContext():
@@ -24,9 +24,9 @@ class UpdateSensorsTest(DbTestCase):
         with self.mysql.dao.create_session() as session:
             sensors = session.query(SensorModel).all()
             self.assertEqual(2, len(sensors))
-            self.assertEqual('hydrometer.humidity', sensors[0].name)
+            self.assertEqual('hydrometer.room', sensors[0].name)
             self.assertEqual(50, json.loads(sensors[0].value))
-            self.assertEqual('thermometer.temperature', sensors[1].name)
+            self.assertEqual('thermometer.room', sensors[1].name)
             self.assertEqual(25, json.loads(sensors[1].value))
             
 class UpdateSolutionStatusesTest(DbTestCase):
