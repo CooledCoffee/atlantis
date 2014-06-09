@@ -69,9 +69,9 @@ class Sensor(object):
         try:
             if self.interval is None:
                 return
-            elapsed = self._calc_elapsed()
-            if force or elapsed > self.interval - 10:
-                self.value = self._retrieve()
+            if not self._should_update(force):
+                return
+            self.value = self._retrieve()
             sensor = self._get_model()
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, False)
         except:
@@ -89,6 +89,12 @@ class Sensor(object):
     
     def _retrieve(self):
         raise NotImplementedError()
+    
+    def _should_update(self, force):
+        if force:
+            return True
+        elapsed = self._calc_elapsed()
+        return elapsed > self.interval - 10
 
 class Controller(Function):
     def _init(self, group, order=0, affects=None):
