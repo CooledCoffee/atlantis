@@ -26,7 +26,7 @@
 		{% for group in device.controllers|groupby('group') %}
 			<div style="margin-top: 5px">
 				{% for controller in group.list|sort(attribute='order') %}
-					<a href="/controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
+					<a href="controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
 				{% endfor %}
 			</div>
 		{% endfor %}

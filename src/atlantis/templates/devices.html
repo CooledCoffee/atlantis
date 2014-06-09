@@ -22,7 +22,7 @@ a:hover {
 		<tr>
 			{% for device in row %}
 				<td class="span4" style="padding-bottom: 20px;">
-					<a href="/device?name={{device.name}}" class="link-device">
+					<a href="device?name={{device.name}}" class="link-device">
 						{{device.name|capitalize}}
 					</a>
 					{% for sensor in device.sensors %}
@@ -31,7 +31,7 @@ a:hover {
 					{% for group in device.controllers|groupby('group') %}
 						<div style="margin-top: 5px">
 							{% for controller in group.list|sort(attribute='order') %}
-								<a href="/controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
+								<a href="controllers/trigger?name=%22{{controller.full_name}}%22" class="btn link-trigger" style="width: 50px">{{controller.name}}</a>
 							{% endfor %}
 						</div>
 					{% endfor %}
