@@ -13,9 +13,11 @@
 						{{sensor.value}}
 						({{sensor.time}})
 					</td>
-					<td class="span1">
+					<td class="span1" style="text-align: right">
+						{% if sensor.interval is not None %}
+							<i class="icon-refresh" style="cursor: pointer" data-url="/sensors/update?name=%22{{sensor.full_name}}%22"></i>
+						{% endif %}
 						<i class="icon-edit" style="cursor: pointer" data-url="/sensors/set?name=%22{{sensor.full_name}}%22"></i>
-						<i class="icon-refresh" style="cursor: pointer" data-url="/sensors/update?name=%22{{sensor.full_name}}%22"></i>
 					</td>
 				</tr>
 			{% endfor %}
