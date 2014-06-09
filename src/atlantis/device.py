@@ -68,8 +68,6 @@ class Sensor(object):
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
     def update(self, force=False):
-        if self.interval is None:
-            return
         if not self._should_update(force):
             return
         try:
@@ -95,6 +93,8 @@ class Sensor(object):
     def _should_update(self, force):
         if force:
             return True
+        if self.interval is None:
+            return False
         elapsed = self._calc_elapsed()
         return elapsed > self.interval - 10
 

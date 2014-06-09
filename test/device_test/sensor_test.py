@@ -138,6 +138,18 @@ class ShouldUpdateTest(SensorTest):
             result = self.sensor._should_update(True)
             self.assertTrue(result)
         
+    def test_no_interval(self):
+        # set up
+        self.sensor.interval = None
+        with self.mysql.dao.create_session() as session:
+            time = datetime.now() - timedelta(seconds=70)
+            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            result = self.sensor._should_update(False)
+            self.assertFalse(result)
+            
 class UpdateTest(SensorTest):
     def test_normal(self):
         # test
@@ -165,20 +177,4 @@ class UpdateTest(SensorTest):
             model = session.get(SensorModel, 'thermometer.room')
             self.assertIsNone(json.loads(model.value))
             self.assertEqual(0.000694444, model.error_rate)
-            
-    def test_none_interval(self):
-        # set up
-        with self.mysql.dao.create_session() as session:
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=datetime(2000, 1, 1)))
-        self.sensor.interval = None
-            
-        # test
-        with self.mysql.dao.SessionContext():
-            self.sensor.update()
-            
-        # verify
-        with self.mysql.dao.create_session() as session:
-            model = session.get(SensorModel, 'thermometer.room')
-            self.assertEqual(24, json.loads(model.value))
-            self.assertEqual(datetime(2000, 1, 1), model.time)
             
