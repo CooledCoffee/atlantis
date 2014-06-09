@@ -59,6 +59,8 @@ class Sensor(object):
         sensor.time = datetime.now()
         
     def available(self):
+        if self.interval is None:
+            return True
         elapsed = self._calc_elapsed()
         threshold = 2.5 * self.interval
         return elapsed < threshold
@@ -66,11 +68,11 @@ class Sensor(object):
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
     def update(self, force=False):
+        if self.interval is None:
+            return
+        if not self._should_update(force):
+            return
         try:
-            if self.interval is None:
-                return
-            if not self._should_update(force):
-                return
             self.value = self._retrieve()
             sensor = self._get_model()
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, False)

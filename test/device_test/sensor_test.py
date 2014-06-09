@@ -82,6 +82,17 @@ class AvailableTest(SensorTest):
             available = self.sensor.available()
             self.assertFalse(available)
             
+    def test_no_interval(self):
+        # set up
+        self.sensor.interval = None
+        with self.mysql.dao.create_session() as session:
+            session.add(SensorModel(name='thermometer.room', value=25, time=datetime(2000, 1, 1)))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            available = self.sensor.available()
+            self.assertTrue(available)
+            
 class ShouldUpdateTest(SensorTest):
     def test_expired(self):
         # set up
