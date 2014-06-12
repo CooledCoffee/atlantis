@@ -65,11 +65,15 @@ class Sensor(object):
         threshold = 2.5 * self.interval
         return elapsed < threshold
     
+    def should_update(self):
+        if self.interval is None:
+            return False
+        elapsed = self._calc_elapsed()
+        return elapsed > self.interval - 10
+
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
-    def update(self, force=False):
-        if not self._should_update(force):
-            return
+    def update(self):
         try:
             self.value = self._retrieve()
             sensor = self._get_model()
@@ -90,14 +94,6 @@ class Sensor(object):
     def _retrieve(self):
         raise NotImplementedError()
     
-    def _should_update(self, force):
-        if force:
-            return True
-        if self.interval is None:
-            return False
-        elapsed = self._calc_elapsed()
-        return elapsed > self.interval - 10
-
 class Controller(Function):
     def _init(self, group, order=0, affects=None):
         super(Controller, self)._init()
@@ -113,7 +109,7 @@ class Controller(Function):
         result = super(Controller, self)._call(*args, **kw)
         if self._affects is not None:
             prop = getattr(self._device, self._affects)
-            prop.update(force=True)
+            prop.update()
         return result
     
 def _calc_error_rate(rate, interval, error):

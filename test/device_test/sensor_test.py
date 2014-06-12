@@ -102,7 +102,7 @@ class ShouldUpdateTest(SensorTest):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.sensor._should_update(False)
+            result = self.sensor.should_update()
             self.assertTrue(result)
             
     def test_almost_expired(self):
@@ -113,7 +113,7 @@ class ShouldUpdateTest(SensorTest):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.sensor._should_update(False)
+            result = self.sensor.should_update()
             self.assertTrue(result)
             
     def test_not_expired(self):
@@ -124,19 +124,8 @@ class ShouldUpdateTest(SensorTest):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.sensor._should_update(False)
+            result = self.sensor.should_update()
             self.assertFalse(result)
-            
-    def test_force(self):
-        # set up
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=10)
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
-            
-        # test
-        with self.mysql.dao.SessionContext():
-            result = self.sensor._should_update(True)
-            self.assertTrue(result)
         
     def test_no_interval(self):
         # set up
@@ -147,7 +136,7 @@ class ShouldUpdateTest(SensorTest):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.sensor._should_update(False)
+            result = self.sensor.should_update()
             self.assertFalse(result)
             
 class UpdateTest(SensorTest):

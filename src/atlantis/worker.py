@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from atlantis import device, rule
-from atlantis.db import SolutionModel
-from decorated.base.context import ctx
 from loggingd import log_enter, log_return
 from mqueue import cron, MINUTELY
 
@@ -19,7 +17,8 @@ def run():
 def _update_sensors():
     for d in device.devices.values():
         for sensor in d.sensors:
-            sensor.update()
+            if sensor.should_update():
+                sensor.update()
             
 @log_enter('Updating solution statuses ...')
 def _update_solution_statuses():
