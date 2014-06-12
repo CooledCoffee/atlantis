@@ -96,9 +96,7 @@ class AvailableTest(SensorTest):
 class ShouldUpdateTest(SensorTest):
     def test_expired(self):
         # set up
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=70)
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
+        self.sensor._last_update_time = datetime.now() - timedelta(seconds=70)
             
         # test
         with self.mysql.dao.SessionContext():
@@ -107,9 +105,7 @@ class ShouldUpdateTest(SensorTest):
             
     def test_almost_expired(self):
         # set up
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=55)
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
+        self.sensor._last_update_time = datetime.now() - timedelta(seconds=55)
             
         # test
         with self.mysql.dao.SessionContext():
@@ -118,9 +114,7 @@ class ShouldUpdateTest(SensorTest):
             
     def test_not_expired(self):
         # set up
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=10)
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
+        self.sensor._last_update_time = datetime.now() - timedelta(seconds=10)
             
         # test
         with self.mysql.dao.SessionContext():
@@ -130,9 +124,7 @@ class ShouldUpdateTest(SensorTest):
     def test_no_interval(self):
         # set up
         self.sensor.interval = None
-        with self.mysql.dao.create_session() as session:
-            time = datetime.now() - timedelta(seconds=70)
-            session.add(SensorModel(name='thermometer.room', value=json.dumps(24), time=time))
+        self.sensor._last_update_time = datetime.now() - timedelta(seconds=70)
             
         # test
         with self.mysql.dao.SessionContext():
@@ -140,6 +132,10 @@ class ShouldUpdateTest(SensorTest):
             self.assertFalse(result)
             
 class UpdateTest(SensorTest):
+    def setUp(self):
+        super(UpdateTest, self).setUp()
+        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1, 0, 0, 0)))
+        
     def test_normal(self):
         # test
         with self.mysql.dao.SessionContext():
@@ -150,6 +146,7 @@ class UpdateTest(SensorTest):
             model = session.get(SensorModel, 'thermometer.room')
             self.assertEqual(25, json.loads(model.value))
             self.assertEqual(0, model.error_rate)
+        self.assertEqual(datetime(2000, 1, 1, 0, 0, 0), self.sensor._last_update_time)
             
     def test_error(self):
         # set up
@@ -166,4 +163,5 @@ class UpdateTest(SensorTest):
             model = session.get(SensorModel, 'thermometer.room')
             self.assertIsNone(json.loads(model.value))
             self.assertEqual(0.000694444, model.error_rate)
-            
+        self.assertEqual(datetime(2000, 1, 1, 0, 0, 0), self.sensor._last_update_time)
+        

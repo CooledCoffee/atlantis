@@ -37,8 +37,9 @@ class Sensor(object):
     def __init__(self, interval=60):
         self.name = None
         self.full_name = None
-        self._device = None
         self.interval = interval
+        self._device = None
+        self._last_update_time = datetime(1970, 1, 1)
         
     @property
     def time(self):
@@ -61,14 +62,14 @@ class Sensor(object):
     def available(self):
         if self.interval is None:
             return True
-        elapsed = self._calc_elapsed()
+        elapsed = (datetime.now() - self.time).total_seconds()
         threshold = 2.5 * self.interval
         return elapsed < threshold
     
     def should_update(self):
         if self.interval is None:
             return False
-        elapsed = self._calc_elapsed()
+        elapsed = (datetime.now() - self._last_update_time).total_seconds()
         return elapsed > self.interval - 10
 
     @log_enter('Updating sensor {self.full_name} ...')
@@ -81,9 +82,7 @@ class Sensor(object):
         except:
             sensor = self._get_model(create=True)
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, True)
-    
-    def _calc_elapsed(self):
-        return (datetime.now() - self.time).total_seconds()
+        self._last_update_time = datetime.now()
     
     def _get_model(self, create=False):
         if create:
