@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from atlantis.base import ExpiredError
 from atlantis.db import SensorModel
 from atlantis.device import Sensor
 from datetime import datetime, timedelta
@@ -32,14 +33,16 @@ class GetTest(SensorTest):
             
         # test
         with self.mysql.dao.SessionContext():
-            self.assertIsNone(self.sensor.value)
             self.assertEqual(datetime(2000, 1, 1), self.sensor.time)
+            with self.assertRaises(ExpiredError):
+                self.sensor.value
             
     def test_no_record(self):
         # test
         with self.mysql.dao.SessionContext():
-            self.assertIsNone(self.sensor.value)
             self.assertEqual(datetime(1970, 1, 1), self.sensor.time)
+            with self.assertRaises(ExpiredError):
+                self.sensor.value
             
 class SetTest(SensorTest):
     def test(self):

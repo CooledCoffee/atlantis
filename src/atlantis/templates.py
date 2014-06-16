@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import ExpiredError
+from atlantis.base import ExpiredError
 from jinja2.environment import Environment
 from jinja2.loaders import FileSystemLoader
 import os

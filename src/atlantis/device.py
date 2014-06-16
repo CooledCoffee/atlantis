@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AbstractComponent
+from atlantis.base import AbstractComponent, ExpiredError
 from atlantis.db import SensorModel
 from datetime import datetime
 from decorated import Function
@@ -49,7 +49,7 @@ class Sensor(object):
     @property
     def value(self):
         if not self.available():
-            return None
+            raise ExpiredError('Sensor %s has expired.' % self.full_name)
         sensor = self._get_model()
         return json.loads(sensor.value) if sensor is not None else None
     
@@ -110,9 +110,6 @@ class Controller(Function):
             prop = getattr(self._device, self._affects)
             prop.update()
         return result
-    
-class ExpiredError(Exception):
-    pass
     
 def _calc_error_rate(rate, interval, error):
     '''

@@ -29,3 +29,6 @@ class AbstractComponent(Singleton):
     def _register(cls):
         raise NotImplementedError()
     
+class ExpiredError(Exception):
+    pass
+    
