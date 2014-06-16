@@ -111,6 +111,9 @@ class Controller(Function):
             prop.update()
         return result
     
+class ExpiredError(Exception):
+    pass
+    
 def _calc_error_rate(rate, interval, error):
     '''
     >>> _calc_error_rate(0.1, 60, True)
