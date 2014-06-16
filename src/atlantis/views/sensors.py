@@ -3,6 +3,7 @@ from atlantis import device
 from atlantis.db import SensorModel
 from decorated.base.context import ctx
 from metaweb import api
+import json
 
 @api
 def all():
@@ -22,8 +23,8 @@ def get(name):
         'error_rate': model.error_rate,
         'name': name,
         'interval': sensor.interval,
-        'time': sensor.time,
-        'value': sensor.value,
+        'time': model.time,
+        'value': json.loads(model.value),
     }
     
 @api

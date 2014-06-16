@@ -12,11 +12,8 @@ class GetTest(DbTestCase):
         # set up
         self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
         self.patches.patch('atlantis.device.devices', {})
-        class TemperatureSensor(Sensor):
-            def _retrieve(self):
-                return 25
         class ThermometerDevice(AbstractDevice):
-            room = TemperatureSensor()
+            room = Sensor()
         with self.mysql.dao.create_session() as session:
             sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
@@ -38,11 +35,8 @@ class AllTest(DbTestCase):
         # set up
         self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
         self.patches.patch('atlantis.device.devices', {})
-        class TemperatureSensor(Sensor):
-            def _retrieve(self):
-                return 25
         class ThermometerDevice(AbstractDevice):
-            room = TemperatureSensor()
+            room = Sensor()
         with self.mysql.dao.create_session() as session:
             sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
