@@ -154,3 +154,18 @@ class FitnessTest(DbTestCase):
             fitness = solution.fitness(None)
         self.assertEqual(0, fitness)
         
+    def test_error(self):
+        # set up
+        class OpenWindowSolution(AbstractSolution):
+            targets = []
+            def _fitness(self, problem):
+                raise Exception()
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.fitness(None)
+        self.assertEqual(0, fitness)
+        

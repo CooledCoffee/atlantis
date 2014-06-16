@@ -4,9 +4,11 @@ from atlantis.base import AbstractComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return, log_and_ignore_error
+import loggingd
 
 problems = {}
 solutions = {}
+log = loggingd.getLogger(__name__)
 
 class AbstractProblem(AbstractComponent):
     description = None
@@ -15,6 +17,9 @@ class AbstractProblem(AbstractComponent):
     def _register(cls):
         cls.name = util.calc_name(cls).upper()
         problems[cls.name] = cls.instance()
+        
+    def exists(self):
+        return _get_bool_field(ProblemModel, self.name, 'exists')
         
     @log_enter('[DEBUG] Updating problem {self.name} ...')
     @log_return('Found problem {self.name}.', condition='ret')
@@ -25,9 +30,6 @@ class AbstractProblem(AbstractComponent):
         model.exists = exists
         return exists
     
-    def exists(self):
-        return _get_bool_field(ProblemModel, self.name, 'exists')
-        
     def _check(self):
         raise NotImplementedError()
     
@@ -51,17 +53,21 @@ class AbstractSolution(AbstractComponent):
         model.applied = True
         
     def fitness(self, problem):
-        model = ctx.session.get(SolutionModel, self.name)
-        if model is not None and model.applied:
+        try:
+            model = ctx.session.get(SolutionModel, self.name)
+            if model is not None and model.applied:
+                return 0
+            if not self._check_preconditions():
+                return 0
+            fitness = self._fitness(problem)
+            if fitness is True:
+                fitness = 100
+            elif fitness is False:
+                fitness = 0
+            return fitness
+        except Exception as e:
+            log.warn('Failed to calc fitness for "%s".' % self.name)
             return 0
-        if not self._check_preconditions():
-            return 0
-        fitness = self._fitness(problem)
-        if fitness is True:
-            fitness = 100
-        elif fitness is False:
-            fitness = 0
-        return fitness
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
     @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
