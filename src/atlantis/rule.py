@@ -70,9 +70,9 @@ class AbstractSolution(AbstractComponent):
             return 0
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
-    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
+    @log_and_ignore_error('Failed to update solution {self.name}.', exc_info=True)
     def update(self):
-        model = ctx.session.get(SolutionModel, self.name)
+        model = ctx.session.get_or_create(SolutionModel, self.name)
         model.applied = self._check()
     
     def _apply(self, problem):
