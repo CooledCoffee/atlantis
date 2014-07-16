@@ -55,7 +55,7 @@ require(['jquery', 'common/sdk', 'common/util', 'common/bootstrap-ext'], functio
 	var dialog = $('#dialog');
 	var valueInput = dialog.find('input[name=value]');
 	var url = null;
-	$('.icon-edit').click(function() {
+	$('.glyphicon-edit').click(function() {
 		dialog.modal();
 		valueInput.focus();
 		url = $(this).attr('data-url');
@@ -73,7 +73,7 @@ require(['jquery', 'common/sdk', 'common/util', 'common/bootstrap-ext'], functio
 		return false;
 	});
 	
-	$('.icon-refresh').click(function() {
+	$('.glyphicon-refresh').click(function() {
 		var url = $(this).attr('data-url');
 		var valueTd = $(this).parent().prev('td');
 		valueTd.text('Updating ...');
