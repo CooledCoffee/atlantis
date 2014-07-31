@@ -16,6 +16,42 @@ class RegisterTest(TestCase):
         self.assertIsInstance(rule.solutions['OPEN_WINDOW'], OpenWindowSolution)
         self.assertIsInstance(rule.solutions['OPEN_AIR_CONDITIONING'], OpenAirConditioningSolution)
         
+class EnabledTest(DbTestCase):
+    def setUp(self):
+        super(EnabledTest, self).setUp()
+        class TemperatureTooHighProblem(AbstractProblem):
+            pass
+        class OpenWindowSolution(AbstractSolution):
+            pass
+        self.problem = TemperatureTooHighProblem()
+        self.solution = OpenWindowSolution()
+        
+    def test_enabled(self):
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', disabled='BAD_ATMOSPHERE'))
+        with self.mysql.dao.SessionContext():
+            result = self.solution.enabled(self.problem)
+        self.assertTrue(result)
+        
+    def test_disabled(self):
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', disabled='TEMPERATURE_TOO_HIGH,TEMPERATURE_TOO_LOW'))
+        with self.mysql.dao.SessionContext():
+            result = self.solution.enabled(self.problem)
+        self.assertFalse(result)
+        
+    def test_no_disable(self):
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', disabled=''))
+        with self.mysql.dao.SessionContext():
+            result = self.solution.enabled(self.problem)
+        self.assertTrue(result)
+        
+    def test_no_model(self):
+        with self.mysql.dao.SessionContext():
+            result = self.solution.enabled(self.problem)
+        self.assertTrue(result)
+            
 class ApplyTest(DbTestCase):
     def test(self):
         # set up
