@@ -4,6 +4,7 @@ from atlantis.base import AbstractComponent
 from atlantis.db import ProblemModel, SolutionModel
 from decorated.base.context import ctx
 from loggingd import log_enter, log_return, log_and_ignore_error
+import doctest
 import loggingd
 
 problems = {}
@@ -71,11 +72,7 @@ class AbstractSolution(AbstractComponent):
             if not self._check_preconditions():
                 return 0
             fitness = self._fitness(problem)
-            if fitness is True:
-                fitness = 100
-            elif fitness is False:
-                fitness = 0
-            return fitness
+            return _process_fitness(fitness)
         except Exception as e:
             log.warn('Failed to calc fitness for "%s".' % self.name)
             return 0
@@ -107,3 +104,29 @@ def _get_bool_field(model_class, key, field, default=False):
     if model is None:
         return default
     return getattr(model, field)
+
+def _process_fitness(fitness):
+    '''
+    >>> _process_fitness(50)
+    50
+    >>> _process_fitness(True)
+    100
+    >>> _process_fitness(False)
+    0
+    >>> _process_fitness('abc')
+    Traceback (most recent call last):
+    ...
+    Exception: Bad fitness "abc".
+    '''
+    if fitness is True:
+        return 100
+    elif fitness is False:
+        return 0
+    elif isinstance(fitness, (int, float)):
+        return fitness
+    else:
+        raise Exception('Bad fitness "%s".' % fitness)
+        
+if __name__ == '__main__':
+    doctest.testmod()
+    
