@@ -19,6 +19,7 @@ class Sensor(Model):
 class Solution(Model):
     name = Column(String, primary_key=True)
     applied = Column(Boolean, nullable=False, default=False)
+    disabled = Column(String, nullable=False, default='')
     
 ProblemModel = Problem
 SensorModel = Sensor

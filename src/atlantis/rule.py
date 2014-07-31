@@ -57,11 +57,17 @@ class AbstractSolution(AbstractComponent):
         model = ctx.session.get_or_create(SolutionModel, self.name)
         model.applied = True
         
+    def enabled(self, problem):
+        pass
+        
     def fitness(self, problem):
         try:
             model = ctx.session.get(SolutionModel, self.name)
-            if model is not None and model.applied:
-                return 0
+            if model is not None:
+                if model.applied:
+                    return 0
+                if problem.name in model.disabled.split(','):
+                    return 0
             if not self._check_preconditions():
                 return 0
             fitness = self._fitness(problem)

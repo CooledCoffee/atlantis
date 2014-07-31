@@ -53,6 +53,12 @@ class UpdateTest(DbTestCase):
             self.assertFalse(model.applied)
             
 class FitnessTest(DbTestCase):
+    def setUp(self):
+        super(FitnessTest, self).setUp()
+        class TemperatureTooHighProblem(AbstractProblem):
+            pass
+        self.problem = TemperatureTooHighProblem()
+        
     def test_default(self):
         # set up
         class OpenWindowSolution(AbstractSolution):
@@ -61,7 +67,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(100, fitness)
         
     def test_number(self):
@@ -74,7 +80,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(100, fitness)
         
     def test_true(self):
@@ -89,7 +95,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(100, fitness)
         
     def test_false(self):
@@ -104,7 +110,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertIs(fitness, 0)
         
     def test_not_fit(self):
@@ -119,7 +125,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(0, fitness)
         
     def test_already_applied(self):
@@ -134,7 +140,22 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
+        self.assertEqual(0, fitness)
+        
+    def test_disabled(self):
+        # set up
+        class OpenWindowSolution(AbstractSolution):
+            targets = []
+            def _fitness(self, problem):
+                return 100
+        with self.mysql.dao.create_session() as session:
+            session.add(SolutionModel(name='OPEN_WINDOW', applied=False, disabled='TEMPERATURE_TOO_HIGH,TEMPERATURE_TOO_LOW'))
+            
+        # test
+        solution = OpenWindowSolution()
+        with self.mysql.dao.SessionContext():
+            fitness = solution.fitness(self.problem)
         self.assertEqual(0, fitness)
         
     def test_pre_conditions_fail(self):
@@ -151,7 +172,7 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(0, fitness)
         
     def test_error(self):
@@ -166,6 +187,6 @@ class FitnessTest(DbTestCase):
         # test
         solution = OpenWindowSolution()
         with self.mysql.dao.SessionContext():
-            fitness = solution.fitness(None)
+            fitness = solution.fitness(self.problem)
         self.assertEqual(0, fitness)
         
