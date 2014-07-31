@@ -7,7 +7,8 @@ dao = None
 
 class Problem(Model):
     name = Column(String, primary_key=True)
-    exists = Column(Boolean, nullable=False)
+    enabled = Column(Boolean, nullable=False, default=True)
+    exists = Column(Boolean, nullable=False, default=False)
 
 class Sensor(Model):
     name = Column(String, primary_key=True)
@@ -17,7 +18,7 @@ class Sensor(Model):
     
 class Solution(Model):
     name = Column(String, primary_key=True)
-    applied = Column(Boolean, nullable=False)
+    applied = Column(Boolean, nullable=False, default=False)
     
 ProblemModel = Problem
 SensorModel = Sensor

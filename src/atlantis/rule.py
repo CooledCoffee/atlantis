@@ -18,6 +18,9 @@ class AbstractProblem(AbstractComponent):
         cls.name = util.calc_name(cls).upper()
         problems[cls.name] = cls.instance()
         
+    def enabled(self):
+        return _get_bool_field(ProblemModel, self.name, 'enabled', default=True)
+        
     def exists(self):
         return _get_bool_field(ProblemModel, self.name, 'exists')
         
@@ -25,6 +28,8 @@ class AbstractProblem(AbstractComponent):
     @log_return('Found problem {self.name}.', condition='ret')
     @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
     def update(self):
+        if not self.enabled():
+            return False
         exists = self._check()
         model = ctx.session.get_or_create(ProblemModel, self.name)
         model.exists = exists
@@ -91,8 +96,8 @@ class AbstractSolution(AbstractComponent):
     def _fitness(self, problem):
         return True
     
-def _get_bool_field(model_class, key, field):
+def _get_bool_field(model_class, key, field, default=False):
     model = ctx.session.get(model_class, key)
     if model is None:
-        return False
+        return default
     return getattr(model, field)

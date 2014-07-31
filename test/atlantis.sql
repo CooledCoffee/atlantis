@@ -1,5 +1,6 @@
 create table problem (
 	name varchar(64) primary key,
+	enabled tinyint not null,
 	`exists` tinyint not null
 );
 
