@@ -11,31 +11,23 @@
 .solution {
 	margin-left: 30pt;
 }
+
+.item-disabled {
+	text-decoration: line-through;
+}
 </style>
 {% endblock %}
 
 {% block body %}
 {% for item in items %}
 	<div class="col-lg-12" style="margin-bottom: 30px">
-		{% if item.problem.exists() %}
-			<div class="col-lg-12 problem" style="color: red">
-				{{item.problem.name}}: {{item.problem.description}}
-			</div>
-		{% else %}
-			<div class="col-lg-12 problem">
-				{{item.problem.name}}: {{item.problem.description}}
-			</div>
-		{% endif %}
+		<div class="col-lg-12 problem {{item.problem.enabled()|test('', 'item-disabled')}}" style="{{item.problem.exists()|test('color: red')}}">
+			{{item.problem.name}}: {{item.problem.description}}
+		</div>
 		{% for solution in item.solutions %}
-			{% if solution.applied() %}
-				<div class="col-lg-12 solution" style="color: #006600; font-weight: bold">
-					{{solution.name}}: {{solution.description}}
-				</div>
-			{% else %}
-				<div class="col-lg-12 solution" style="color: gray">
-					{{solution.name}}: {{solution.description}}
-				</div>
-			{% endif %}
+			<div class="col-lg-12 solution {{solution.enabled(item.problem)|test('', 'item-disabled')}}" style="{{solution.applied()|test('color: #006600; font-weight: bold', 'color: gray')}}">
+				{{solution.name}}: {{solution.description}}
+			</div>
 		{% endfor %}
 	</div>
 {% endfor %}
