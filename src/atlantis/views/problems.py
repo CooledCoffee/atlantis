@@ -6,4 +6,4 @@ from metaweb import api
 @api
 def enable(name, enabled):
     model = ctx.session.get_or_create(ProblemModel, name)
-    model.enabled = enabled
+    model.disabled = not enabled

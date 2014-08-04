@@ -20,7 +20,7 @@ class AbstractProblem(AbstractComponent):
         problems[cls.name] = cls.instance()
         
     def enabled(self):
-        return _get_bool_field(ProblemModel, self.name, 'enabled', default=True)
+        return not _get_bool_field(ProblemModel, self.name, 'disabled', default=False)
         
     def exists(self):
         return _get_bool_field(ProblemModel, self.name, 'exists')

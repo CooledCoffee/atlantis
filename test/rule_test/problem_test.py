@@ -41,7 +41,7 @@ class UpdateTest(DbTestCase):
                 return False
         problem = TemperatureTooHighProblem()
         with self.mysql.dao.create_session() as session:
-            session.add(ProblemModel(name='TEMPERATURE_TOO_HIGH', enabled=False, exists=True))
+            session.add(ProblemModel(name='TEMPERATURE_TOO_HIGH', disabled=True, exists=True))
         
         # test
         with self.mysql.dao.SessionContext():

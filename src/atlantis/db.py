@@ -7,7 +7,7 @@ dao = None
 
 class Problem(Model):
     name = Column(String, primary_key=True)
-    enabled = Column(Boolean, nullable=False, default=True)
+    disabled = Column(Boolean, nullable=False, default=False)
     exists = Column(Boolean, nullable=False, default=False)
 
 class Sensor(Model):

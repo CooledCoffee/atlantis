@@ -9,12 +9,12 @@ class EnableTest(DbTestCase):
             problems.enable('TEMPERATURE_TOO_HIGH', True)
         with self.mysql.dao.create_session() as session:
             model = session.get(ProblemModel, 'TEMPERATURE_TOO_HIGH')
-            self.assertTrue(model.enabled)
+            self.assertFalse(model.disabled)
             
     def test_disable(self):
         with self.mysql.dao.SessionContext():
             problems.enable('TEMPERATURE_TOO_HIGH', False)
         with self.mysql.dao.create_session() as session:
             model = session.get(ProblemModel, 'TEMPERATURE_TOO_HIGH')
-            self.assertFalse(model.enabled)
+            self.assertTrue(model.disabled)
             
