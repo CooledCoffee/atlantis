@@ -2,15 +2,15 @@
 from atlantis.device import AbstractDevice, Sensor, Controller
 from testutil import TestCase
 
-class AffectsTest(TestCase):
+class InvalidatesTest(TestCase):
     def test(self):
         # set up
         class PowerSensor(Sensor):
             def update(self):
-                AffectsTest.called = True
+                InvalidatesTest.called = True
         class TestDevice(AbstractDevice):
             power = PowerSensor()
-            @Controller('power', affects='power')
+            @Controller('power', invalidates='power')
             def on(self):
                 pass
             

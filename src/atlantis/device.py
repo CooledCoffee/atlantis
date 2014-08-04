@@ -94,11 +94,11 @@ class Sensor(object):
         raise NotImplementedError()
     
 class Controller(Function):
-    def _init(self, group, order=0, affects=None):
+    def _init(self, group, order=0, invalidates=None):
         super(Controller, self)._init()
         self.group = group
         self.order = order
-        self._affects = affects
+        self._invalidates = invalidates
         self.name = None
         self.full_name = None
         self._device = None
@@ -106,8 +106,8 @@ class Controller(Function):
     @log_enter('Triggering controller {self.full_name} ...')
     def _call(self, *args, **kw):
         result = super(Controller, self)._call(*args, **kw)
-        if self._affects is not None:
-            prop = getattr(self._device, self._affects)
+        if self._invalidates is not None:
+            prop = getattr(self._device, self._invalidates)
             prop.update()
         return result
     
