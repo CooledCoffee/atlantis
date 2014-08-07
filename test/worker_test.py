@@ -71,36 +71,52 @@ class CheckProblemsTest(TestCase):
         
 class FindBestSolutionTest(TestCase):
     def test_success(self):
-        # set up
-        self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
-        class TemperatureTooHighProblem(AbstractProblem):
-            pass
+        class OpenFanSolution(AbstractSolution):
+            def fitness(self, problem):
+                return 50
         class OpenWindowSolution(AbstractSolution):
-            targets = [TemperatureTooHighProblem]
             def fitness(self, problem):
                 return 100
-        class OpenAirConditioningSolution(AbstractSolution):
-            targets = [TemperatureTooHighProblem]
-            def fitness(self, problem):
-                return 0
-            
-        # test
-        problem = TemperatureTooHighProblem()
-        solution = worker._find_best_solution(problem)
-        self.assertIsInstance(solution, OpenWindowSolution)
+        solutions = [OpenFanSolution(), OpenWindowSolution()]
+        best = worker._find_best_solution(None, solutions)
+        self.assertIsInstance(best, OpenWindowSolution)
         
-    def test_no_solution(self):
+    def test_no_fit(self):
+        class OpenWindowSolution(AbstractSolution):
+            def fitness(self, problem):
+                return False
+        solutions = [OpenWindowSolution()]
+        best = worker._find_best_solution(None, solutions)
+        self.assertIsNone(best)
+        
+class ApplySolutionsTest(TestCase):
+    def test_success(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.solutions', {}))
+        ApplySolutionsTest.solutions = []
         class TemperatureTooHighProblem(AbstractProblem):
             pass
         class OpenWindowSolution(AbstractSolution):
             targets = [TemperatureTooHighProblem]
+            def apply(self, problem):
+                ApplySolutionsTest.solutions.append('OpenWindowSolution')
+            def fitness(self, problem):
+                return 100
+        class OpenFanSolution(AbstractSolution):
+            targets = [TemperatureTooHighProblem]
+            def apply(self, problem):
+                ApplySolutionsTest.solutions.append('OpenFanSolution')
+            def fitness(self, problem):
+                return 50
+        class OpenAirConditioningSolution(AbstractSolution):
+            targets = [TemperatureTooHighProblem]
+            def apply(self, problem):
+                ApplySolutionsTest.solutions.append('OpenAirConditioningSolution')
             def fitness(self, problem):
                 return 0
             
         # test
         problem = TemperatureTooHighProblem()
-        solution = worker._find_best_solution(problem)
-        self.assertIsNone(solution)
-        
+        worker._apply_solutions(problem)
+        self.assertEqual(['OpenWindowSolution', 'OpenFanSolution'], self.solutions)
+         

@@ -30,10 +30,24 @@ def _update_problems():
     return [p for p in rule.problems.values() if p.update()]
     
 @log_enter('Solving problem {problem.name} ...')
-@log_return('Found solution {ret.name}.', condition='ret is not None')
-@log_return('No solution.', condition='ret is None')
-def _find_best_solution(problem):
+def _apply_solutions(problem):
+    solutions = _find_solutions(problem)
+    while len(solutions) > 0:
+        best = _find_best_solution(problem, solutions)
+        if best is None:
+            break
+        best.apply(problem)
+        solutions.remove(best)
+        
+def _find_solutions(problem):
     problem_class = type(problem)
-    candidates = [s for s in rule.solutions.values() if problem_class in s.targets]
-    solutions = [c for c in candidates if c.fitness(problem) > 0]
-    return solutions[0] if len(solutions) > 0 else None
+    return [s for s in rule.solutions.values() if problem_class in s.targets]
+    
+@log_return('Found solution {ret.name}.', condition='ret is not None')
+def _find_best_solution(problem, solutions):
+    fitnesses = {s: s.fitness(problem) for s in solutions}
+    fitnesses = fitnesses.items()
+    fitnesses.sort(key=lambda item: -item[1])
+    best, fitness = fitnesses[0]
+    return best if fitness > 0 else None
+    
