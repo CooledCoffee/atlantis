@@ -54,7 +54,7 @@ class UpdateSolutionStatusesTest(DbTestCase):
             self.assertFalse(session.get(SolutionModel, 'OPEN_FAN').applied)
             
 class CheckProblemsTest(TestCase):
-    def test(self):
+    def test_basic(self):
         # set up
         self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
         class TemperatureTooHighProblem(AbstractProblem):
@@ -68,6 +68,23 @@ class CheckProblemsTest(TestCase):
         problems = worker._update_problems()
         self.assertEqual(1, len(problems))
         self.assertIsInstance(problems[0], TemperatureTooHighProblem)
+        
+    def test_priority(self):
+        # set up
+        self.useFixture(MonkeyPatch('atlantis.rule.problems', {}))
+        class TemperatureTooHighProblem(AbstractProblem):
+            def update(self):
+                return True
+        class TemperatureTooLowProblem(AbstractProblem):
+            priority = -1
+            def update(self):
+                return True
+            
+        # test
+        problems = worker._update_problems()
+        self.assertEqual(2, len(problems))
+        self.assertIsInstance(problems[0], TemperatureTooLowProblem)
+        self.assertIsInstance(problems[1], TemperatureTooHighProblem)
         
 class FindBestSolutionTest(TestCase):
     def test_success(self):

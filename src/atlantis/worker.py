@@ -27,7 +27,9 @@ def _update_solution_statuses():
         
 @log_enter('Checking problems ...')
 def _update_problems():
-    return [p for p in rule.problems.values() if p.update()]
+    problems = [p for p in rule.problems.values() if p.update()]
+    problems.sort(key=lambda p: (p.priority, p.name))
+    return problems
     
 @log_enter('Solving problem {problem.name} ...')
 def _apply_solutions(problem):

@@ -13,6 +13,7 @@ log = loggingd.getLogger(__name__)
 
 class AbstractProblem(AbstractComponent):
     description = None
+    priority = 0
     
     @classmethod
     def _register(cls):
