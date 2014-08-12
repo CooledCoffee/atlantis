@@ -9,9 +9,7 @@ def run():
     _update_solution_statuses()
     problems = _update_problems()
     for problem in problems:
-        solution = _find_best_solution(problem)
-        if solution is not None:
-            solution.apply(problem)
+        _apply_solutions(problem)
 
 @log_enter('Updating sensors ...')
 def _update_sensors():
