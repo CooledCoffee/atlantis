@@ -113,6 +113,14 @@ class Evaluator(object):
     def _fitness(self):
         return True
     
+class FixedEvaluator(Evaluator):
+    def __init__(self, fitness):
+        super(FixedEvaluator, self).__init__()
+        self._value = fitness
+        
+    def _fitness(self):
+        return self._value
+    
 class ProblemEvaluator(Evaluator):
     def __init__(self, *classes):
         super(ProblemEvaluator, self).__init__()
