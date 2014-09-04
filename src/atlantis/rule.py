@@ -42,7 +42,6 @@ class AbstractProblem(AbstractComponent):
     
 class AbstractSolution(AbstractComponent):
     description = None
-    preconditions = []
     targets = None
     
     @classmethod
@@ -73,11 +72,11 @@ class AbstractSolution(AbstractComponent):
             if model is not None:
                 if model.applied:
                     return 0
-            if not self._check_preconditions():
-                return 0
-            fitness = self._fitness(problem)
-            return _process_fitness(fitness)
-        except Exception as e:
+            evaluator = self.targets[type(problem)]
+            if evaluator is None:
+                evaluator = Evaluator()
+            return evaluator.fitness()
+        except Exception:
             log.warn('Failed to calc fitness for "%s".' % self.name)
             return 0
         
@@ -93,16 +92,27 @@ class AbstractSolution(AbstractComponent):
     def _check(self):
         raise NotImplementedError()
     
-    def _check_preconditions(self):
-        for problem in self.preconditions:
-            problem = problems[problem.name]
-            if problem.exists():
+class Evaluator(object):
+    def fitness(self):
+        if not self._check():
+            return 0
+        fitness = self._fitness()
+        return _process_fitness(fitness)
+    
+    def _check(self):
+        for attr in dir(self):
+            if not attr.startswith('_check_'):
+                continue
+            attr = getattr(self, attr)
+            if not callable(attr):
+                continue
+            if not attr():
                 return False
         return True
     
-    def _fitness(self, problem):
+    def _fitness(self):
         return True
-    
+
 def _get_bool_field(model_class, key, field, default=False):
     model = ctx.session.get(model_class, key)
     if model is None:
