@@ -2,7 +2,7 @@
 from atlantis.rule import Evaluator
 from fixtures2 import TestCase
 
-class EvaluatorTest(TestCase):
+class CheckTest(TestCase):
     def test_all_true(self):
         class TestEvaluator(Evaluator):
             def _check_1(self):

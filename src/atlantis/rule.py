@@ -112,6 +112,17 @@ class Evaluator(object):
     
     def _fitness(self):
         return True
+    
+class ProblemEvaluator(Evaluator):
+    def __init__(self, *classes):
+        super(ProblemEvaluator, self).__init__()
+        self._classes = classes
+        
+    def _check_problems(self):
+        for cls in self._classes:
+            if cls.instance().exists():
+                return False
+        return True
 
 def _get_bool_field(model_class, key, field, default=False):
     model = ctx.session.get(model_class, key)
