@@ -21,7 +21,7 @@ setup(
         'decorated',
         'inflection',
         'loggingd',
-        'metaweb',
+        'metaweb >= 1.4',
         'mqueue',
     ],
     packages=[
