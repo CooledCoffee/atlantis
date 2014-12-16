@@ -3,18 +3,18 @@ from atlantis import templates, rule, device as mdevice
 from decorated.base.dict import Dict
 from metaweb import page
 
-@page
+@page(path='/devices')
 def devices():
     devices = mdevice.devices.values()
     devices.sort(key=lambda d: d.name)
     return templates.render('devices.html', devices=devices)
 
-@page
+@page(path='/device')
 def device(name):
     dev = mdevice.devices.get(name)
     return templates.render('device.html', device=dev)
 
-@page
+@page(path='/rules')
 def rules():
     problems = list(rule.problems.values())
     problems.sort(key=lambda p: p.name)
