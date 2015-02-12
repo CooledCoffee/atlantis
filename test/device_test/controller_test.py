@@ -16,5 +16,5 @@ class InvalidatesTest(TestCase):
             
         # test
         device = TestDevice()
-        device.on()
+        device.on.trigger()
         self.assertTrue(self.called)

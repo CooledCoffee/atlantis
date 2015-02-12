@@ -104,10 +104,10 @@ class Controller(Function):
         self._device = None
         
     @log_enter('Triggering controller {self.full_name} ...')
-    def _call(self, *args, **kw):
-        result = super(Controller, self)._call(*args, **kw)
+    def trigger(self, device):
+        result = self._call(device)
         if self._invalidates is not None:
-            prop = getattr(self._device, self._invalidates)
+            prop = getattr(device, self._invalidates)
             prop.update()
         return result
     
