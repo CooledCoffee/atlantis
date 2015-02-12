@@ -32,6 +32,13 @@ class AbstractDevice(AbstractComponent):
                 c.full_name = '%s.%s' % (cls.name, c.name)
                 c._device = device
                 cls.controllers.append(obj)
+
+class AutoNameComponent(Function):
+    def full_name(self, device):
+        return '%s.%s' % (type(device).name, self.__name__)
+    
+    def name(self, device):
+        return self.__name__
     
 class Sensor(object):
     def __init__(self, interval=60):
@@ -93,14 +100,12 @@ class Sensor(object):
     def _retrieve(self):
         raise NotImplementedError()
     
-class Controller(Function):
+class Controller(AutoNameComponent):
     def _init(self, group, order=0, invalidates=None):
         super(Controller, self)._init()
         self.group = group
         self.order = order
         self._invalidates = invalidates
-        self.name = None
-        self.full_name = None
         self._device = None
         
     @log_enter('Triggering controller {self.full_name} ...')
