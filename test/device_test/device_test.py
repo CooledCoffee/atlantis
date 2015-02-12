@@ -35,8 +35,9 @@ class ControllersTest(TestCase):
             def off(self):
                 pass
         device = SpeakerDevice()
-        self.assertEqual(2, len(device.controllers))
-        self.assertEqual('off', device.controllers[0].name)
-        self.assertEqual('speaker.off', device.controllers[0].full_name)
-        self.assertEqual('on', device.controllers[1].name)
-        self.assertEqual('speaker.on', device.controllers[1].full_name)
+        controllers = device.controllers()
+        self.assertEqual(2, len(controllers))
+        self.assertEqual('off', controllers[0].name())
+        self.assertEqual('speaker.off', controllers[0].full_name())
+        self.assertEqual('on', controllers[1].name())
+        self.assertEqual('speaker.on', controllers[1].full_name())

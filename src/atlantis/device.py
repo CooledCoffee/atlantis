@@ -18,7 +18,6 @@ class AbstractDevice(AbstractComponent):
         device = cls.instance()
         devices[cls.name] = device
         cls.sensors = []
-        cls.controllers = []
         for attr in dir(device):
             obj = getattr(device, attr)
             if isinstance(obj, Sensor):
@@ -26,12 +25,16 @@ class AbstractDevice(AbstractComponent):
                 obj.full_name = '%s.%s' % (cls.name, obj.name)
                 obj._device = device
                 cls.sensors.append(obj)
-            elif hasattr(obj, 'im_func') and isinstance(obj.im_func, Controller):
-                c = obj.im_func
-                c.name = attr
-                c.full_name = '%s.%s' % (cls.name, c.name)
-                c._device = device
-                cls.controllers.append(obj)
+                
+    def controllers(self):
+        results = []
+        for attr in dir(self):
+            method = getattr(self, attr)
+            if not hasattr(method, 'im_func'):
+                continue
+            if isinstance(method.im_func, Controller):
+                results.append(method)
+        return results
 
 class AutoNameComponent(Function):
     def full_name(self, device):
@@ -106,7 +109,6 @@ class Controller(AutoNameComponent):
         self.group = group
         self.order = order
         self._invalidates = invalidates
-        self._device = None
         
     @log_enter('Triggering controller {self.full_name} ...')
     def trigger(self, device):
