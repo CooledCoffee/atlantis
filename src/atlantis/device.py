@@ -17,15 +17,7 @@ class AbstractDevice(AbstractComponent):
         cls.name = util.calc_name(cls)
         device = cls.instance()
         devices[cls.name] = device
-        cls.sensors = []
-        for attr in dir(device):
-            obj = getattr(device, attr)
-            if isinstance(obj, Sensor):
-                obj.name = attr
-                obj.full_name = '%s.%s' % (cls.name, obj.name)
-                obj._device = device
-                cls.sensors.append(obj)
-                
+        
     def controllers(self):
         results = []
         for attr in dir(self):
@@ -43,63 +35,59 @@ class AutoNameComponent(Function):
     def name(self, device):
         return self.__name__
     
-class Sensor(object):
-    def __init__(self, interval=60):
-        self.name = None
-        self.full_name = None
-        self.interval = interval
-        self._device = None
-        self._last_update_time = datetime(1970, 1, 1)
-        
-    @property
-    def time(self):
-        sensor = self._get_model()
-        return sensor.time if sensor is not None else datetime(1970, 1, 1)
-    
-    @property
-    def value(self):
-        if not self.available():
-            raise ExpiredError('Sensor %s has expired.' % self.full_name)
-        sensor = self._get_model()
-        return json.loads(sensor.value) if sensor is not None else None
-    
-    @value.setter
-    def value(self, value):
-        sensor = self._get_model(create=True)
-        sensor.value = json.dumps(value)
-        sensor.time = datetime.now()
-        
-    def available(self):
+class Sensor(AutoNameComponent):
+    def available(self, device):
         if self.interval is None:
             return True
-        elapsed = (datetime.now() - self.time).total_seconds()
+        elapsed = (datetime.now() - self.time(device)).total_seconds()
         threshold = 2.5 * self.interval
         return elapsed < threshold
-    
-    def should_update(self):
+     
+    def should_update(self, device):
         if self.interval is None:
             return False
-        elapsed = (datetime.now() - self._last_update_time).total_seconds()
+        elapsed = (datetime.now() - self.time(device)).total_seconds()
         return elapsed > self.interval - 10
-
+    
+    def time(self, device):
+        sensor = self._get_model(device)
+        return sensor.time if sensor is not None else datetime(1970, 1, 1)
+    
     @log_enter('Updating sensor {self.full_name} ...')
     @log_and_ignore_error('Failed to update sensor {self.full_name}.', exc_info=True)
-    def update(self):
+    def update(self, device):
         try:
-            self.value = self._retrieve()
-            sensor = self._get_model()
+            value = self._call(device)
+            self.value(device, value)
+            sensor = self._get_model(device)
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, False)
         except:
-            sensor = self._get_model(create=True)
+            sensor = self._get_model(device, create=True)
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, True)
-        self._last_update_time = datetime.now()
+            raise
     
-    def _get_model(self, create=False):
-        if create:
-            return ctx.session.get_or_create(SensorModel, self.full_name)
+    def value(self, device, value=None):
+        if value is None:
+            if not self.available(device):
+                raise ExpiredError('Sensor %s has expired.' % self.full_name(device))
+            model = self._get_model(device)
+            return json.loads(model.value) if model is not None else None
         else:
-            return ctx.session.get(SensorModel, self.full_name)
+            model = self._get_model(device, create=True)
+            model.value = json.dumps(value)
+            model.time = datetime.now()
     
+    def _get_model(self, device, create=False):
+        if create:
+            return ctx.session.get_or_create(SensorModel, self.full_name(device))
+        else:
+            return ctx.session.get(SensorModel, self.full_name(device))
+     
+    def _init(self, interval=60):
+        super(Sensor, self)._init()
+        self.interval = interval
+        self._device = None
+        
     def _retrieve(self):
         raise NotImplementedError()
     
