@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from atlantis import util
+from atlantis import util, db
 from atlantis.base import AbstractComponent, ExpiredError
-from atlantis.db import SensorModel
+from atlantis.db import SensorModel, ProblemModel
 from datetime import datetime
 from decorated import Function
 from decorated.base.context import ctx
-from loggingd import log_and_ignore_error, log_enter
+from loggingd import log_and_ignore_error, log_enter, log_return
 import doctest
 import json
 
@@ -21,16 +21,19 @@ class AbstractDevice(AbstractComponent):
     def controllers(self):
         return self._list_components(Controller)
     
+    def problems(self):
+        return self._list_components(Problem)
+    
     def sensors(self):
         return self._list_components(Sensor)
     
-    def _list_components(self, type):
+    def _list_components(self, component_type):
         results = []
         for attr in dir(self):
             method = getattr(self, attr)
             if not hasattr(method, 'im_func'):
                 continue
-            if isinstance(method.im_func, type):
+            if isinstance(method.im_func, component_type):
                 results.append(method)
         return results
 
@@ -111,6 +114,33 @@ class Controller(AutoNameComponent):
             prop = getattr(device, self._invalidates)
             prop.update()
         return result
+    
+class Problem(AutoNameComponent):
+    def enabled(self, device):
+        name = self.full_name(device)
+        return not db.get_bool_field(ProblemModel, name, 'disabled',
+                default=False)
+        
+    def exists(self, device):
+        name = self.full_name(device)
+        return db.get_bool_field(ProblemModel, name, 'exists')
+    
+    @log_enter('[DEBUG] Updating problem {self.name} ...')
+    @log_return('Found problem {self.name}.', condition='ret')
+    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
+    def update(self, device):
+        if not self.enabled(device):
+            return False
+        exists = self._call(device)
+        name = self.full_name(device)
+        model = ctx.session.get_or_create(ProblemModel, name)
+        model.exists = exists
+        return exists
+    
+    def _init(self, description=None, priority=0):
+        super(Problem, self)._init()
+        self.description = description
+        self.priority = priority
     
 def _calc_error_rate(rate, interval, error):
     '''

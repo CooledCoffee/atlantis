@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
 from atlantis.base import AbstractComponent
-from atlantis.db import ProblemModel, SolutionModel
+from atlantis.db import SolutionModel
 from decorated.base.context import ctx
-from loggingd import log_enter, log_return, log_and_ignore_error
+from loggingd import log_enter, log_and_ignore_error
 import doctest
 import loggingd
 
@@ -11,35 +11,6 @@ problems = {}
 solutions = {}
 log = loggingd.getLogger(__name__)
 
-class AbstractProblem(AbstractComponent):
-    description = None
-    priority = 0
-    
-    @classmethod
-    def _register(cls):
-        cls.name = util.calc_name(cls).upper()
-        problems[cls.name] = cls.instance()
-        
-    def enabled(self):
-        return not _get_bool_field(ProblemModel, self.name, 'disabled', default=False)
-        
-    def exists(self):
-        return _get_bool_field(ProblemModel, self.name, 'exists')
-        
-    @log_enter('[DEBUG] Updating problem {self.name} ...')
-    @log_return('Found problem {self.name}.', condition='ret')
-    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
-    def update(self):
-        if not self.enabled():
-            return False
-        exists = self._check()
-        model = ctx.session.get_or_create(ProblemModel, self.name)
-        model.exists = exists
-        return exists
-    
-    def _check(self):
-        raise NotImplementedError()
-    
 class AbstractSolution(AbstractComponent):
     description = None
     targets = None
@@ -131,12 +102,6 @@ class ProblemEvaluator(Evaluator):
             if cls.instance().exists():
                 return False
         return True
-
-def _get_bool_field(model_class, key, field, default=False):
-    model = ctx.session.get(model_class, key)
-    if model is None:
-        return default
-    return getattr(model, field)
 
 def _process_fitness(fitness):
     '''
