@@ -14,5 +14,5 @@ create table sensor (
 create table solution (
 	name varchar(64) primary key,
 	applied tinyint not null,
-	disabled varchar(256) not null
+	disabled tinyint not null
 );

@@ -11,58 +11,6 @@ problems = {}
 solutions = {}
 log = loggingd.getLogger(__name__)
 
-class AbstractSolution(AbstractComponent):
-    description = None
-    targets = None
-    
-    @classmethod
-    def _register(cls):
-        cls.name = util.calc_name(cls).upper()
-        solutions[cls.name] = cls.instance()
-        
-    def applied(self):
-        return _get_bool_field(SolutionModel, self.name, 'applied')
-    
-    @log_enter('Applying solution {self.name} ...')
-    def apply(self, problem):
-        self._apply(problem)
-        model = ctx.session.get_or_create(SolutionModel, self.name)
-        model.applied = True
-        
-    def enabled(self, problem):
-        model = ctx.session.get(SolutionModel, self.name)
-        if model is None:
-            return True
-        return problem.name not in model.disabled.split(',')
-        
-    def fitness(self, problem):
-        try:
-            if not self.enabled(problem):
-                return 0
-            model = ctx.session.get(SolutionModel, self.name)
-            if model is not None:
-                if model.applied:
-                    return 0
-            evaluator = self.targets[type(problem)]
-            if evaluator is None:
-                evaluator = Evaluator()
-            return evaluator.fitness()
-        except Exception:
-            log.warn('Failed to calc fitness for "%s".' % self.name)
-            return 0
-        
-    @log_enter('[DEBUG] Updating solution status {self.name} ...')
-    @log_and_ignore_error('Failed to update solution {self.name}.', exc_info=True)
-    def update(self):
-        model = ctx.session.get_or_create(SolutionModel, self.name)
-        model.applied = self._check()
-    
-    def _apply(self, problem):
-        raise NotImplementedError()
-    
-    def _check(self):
-        raise NotImplementedError()
-    
 class Evaluator(object):
     def fitness(self):
         if not self._check():
@@ -103,28 +51,6 @@ class ProblemEvaluator(Evaluator):
                 return False
         return True
 
-def _process_fitness(fitness):
-    '''
-    >>> _process_fitness(50)
-    50
-    >>> _process_fitness(True)
-    100
-    >>> _process_fitness(False)
-    0
-    >>> _process_fitness('abc')
-    Traceback (most recent call last):
-    ...
-    Exception: Bad fitness "abc".
-    '''
-    if fitness is True:
-        return 100
-    elif fitness is False:
-        return 0
-    elif isinstance(fitness, (int, float)):
-        return fitness
-    else:
-        raise Exception('Bad fitness "%s".' % fitness)
-        
 if __name__ == '__main__':
     doctest.testmod()
     
