@@ -19,12 +19,18 @@ class AbstractDevice(AbstractComponent):
         devices[cls.name] = device
         
     def controllers(self):
+        return self._list_components(Controller)
+    
+    def sensors(self):
+        return self._list_components(Sensor)
+    
+    def _list_components(self, type):
         results = []
         for attr in dir(self):
             method = getattr(self, attr)
             if not hasattr(method, 'im_func'):
                 continue
-            if isinstance(method.im_func, Controller):
+            if isinstance(method.im_func, type):
                 results.append(method)
         return results
 
