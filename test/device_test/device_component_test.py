@@ -32,9 +32,9 @@ class GetModelTest(DbTestCase):
             model = ThermometerDevice().room._get_model()
             self.assertEqual('thermometer.room', model.name)
             
-class GetBoolFieldTest(DbTestCase):
+class GetModelFieldTest(DbTestCase):
     def setUp(self):
-        super(GetBoolFieldTest, self).setUp()
+        super(GetModelFieldTest, self).setUp()
         class Problem(DeviceComponent):
             pass
         class ThermometerDevice(AbstractDevice):
@@ -50,7 +50,7 @@ class GetBoolFieldTest(DbTestCase):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.comp._get_bool_field('exists')
+            result = self.comp._get_model_field('exists')
             self.assertTrue(result)
             
     def test_false(self):
@@ -60,12 +60,18 @@ class GetBoolFieldTest(DbTestCase):
             
         # test
         with self.mysql.dao.SessionContext():
-            result = self.comp._get_bool_field('exists')
+            result = self.comp._get_model_field('exists')
             self.assertFalse(result)
             
     def test_no_record(self):
         # test
         with self.mysql.dao.SessionContext():
-            result = self.comp._get_bool_field('exists')
+            result = self.comp._get_model_field('exists')
             self.assertFalse(result)
+            
+    def test_default(self):
+        # test
+        with self.mysql.dao.SessionContext():
+            result = self.comp._get_model_field('exists', default=True)
+            self.assertTrue(result)
             

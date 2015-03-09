@@ -11,7 +11,7 @@ log = loggingd.getLogger(__name__)
 
 class Solution(DeviceComponent):
     def applied(self, device):
-        return self._get_bool_field(device, 'applied')
+        return self._get_model_field(device, 'applied')
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, device):
@@ -24,7 +24,7 @@ class Solution(DeviceComponent):
         return func
     
     def enabled(self, device):
-        return not self._get_bool_field(device, 'disabled')
+        return self._get_model_field(device, 'enabled', default=True)
     
     def evaluator(self, func):
         self._evaluator = func

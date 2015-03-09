@@ -48,7 +48,7 @@ class EnabledTest(SolutionTest):
     def test_enabled(self):
         # set up
         with self.mysql.dao.create_session() as session:
-            session.add(SolutionModel(name='window.open_for_cooling', disabled=False))
+            session.add(SolutionModel(name='window.open_for_cooling', enabled=True))
             
         # test
         with self.mysql.dao.SessionContext():
@@ -127,7 +127,7 @@ class FitnessTest(SolutionTest):
     def test_disabled(self):
         # set up
         with self.mysql.dao.create_session() as session:
-            session.add(SolutionModel(name='window.open_for_cooling', disabled=True))
+            session.add(SolutionModel(name='window.open_for_cooling', enabled=False))
              
         # test
         with self.mysql.dao.SessionContext():

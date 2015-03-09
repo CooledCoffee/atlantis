@@ -1,6 +1,6 @@
 create table problem (
 	name varchar(64) primary key,
-	disabled tinyint not null,
+	enabled tinyint not null default 1,
 	`exists` tinyint not null
 );
 
@@ -14,5 +14,5 @@ create table sensor (
 create table solution (
 	name varchar(64) primary key,
 	applied tinyint not null,
-	disabled tinyint not null
+	enabled tinyint not null default 1
 );

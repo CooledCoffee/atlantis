@@ -22,7 +22,7 @@ class EnabledTest(ProblemTest):
     def test_enabled(self):
         # set up
         with self.mysql.dao.create_session() as session:
-            session.add(ProblemModel(name='thermometer.too_high', disabled=False))
+            session.add(ProblemModel(name='thermometer.too_high', enabled=True))
             
         # test
         with self.mysql.dao.SessionContext():
@@ -55,7 +55,7 @@ class UpdateTest(ProblemTest):
     def test_disabled(self):
         # set up
         with self.mysql.dao.create_session() as session:
-            session.add(ProblemModel(name='thermometer.too_high', disabled=True, exists=False))
+            session.add(ProblemModel(name='thermometer.too_high', enabled=False))
         
         # test
         with self.mysql.dao.SessionContext():
