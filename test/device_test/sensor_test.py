@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from atlantis.base import ExpiredError
 from atlantis.db import SensorModel
-from atlantis.device import Sensor, AbstractDevice
+from atlantis.device import AbstractDevice
+from atlantis.sensor import Sensor
 from datetime import datetime, timedelta
 from fixtures2 import DateTimeFixture
 from testutil import DbTestCase
@@ -19,7 +20,7 @@ class SensorTest(DbTestCase):
 class GetTest(SensorTest):
     def test_success(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1, 0, 0, 0)))
+        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1, 0, 0, 0)))
         with self.mysql.dao.create_session() as session:
             session.add(SensorModel(name='thermometer.room', value=json.dumps(25), time=datetime(2000, 1, 1)))
             
@@ -49,7 +50,7 @@ class GetTest(SensorTest):
 class SetTest(SensorTest):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1, 0, 0, 0)))
+        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1, 0, 0, 0)))
         
         # test
         with self.mysql.dao.SessionContext():

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import device
-from atlantis.device import Sensor, Controller, AbstractDevice
+from atlantis.device import Sensor, AbstractDevice
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from testutil import TestCase
 

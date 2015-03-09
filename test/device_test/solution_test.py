@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import SolutionModel
-from atlantis.device import AbstractDevice, Solution
+from atlantis.device import AbstractDevice
+from atlantis.solution import Solution
 from testutil import DbTestCase
 
 class SolutionTest(DbTestCase):

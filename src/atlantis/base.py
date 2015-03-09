@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decorated import Function
 
 class SingletonType(type):
     def __init__(self, name, bases, attrs):
@@ -28,6 +29,13 @@ class AbstractComponent(Singleton):
     @classmethod
     def _register(cls):
         raise NotImplementedError()
+    
+class AutoNameComponent(Function):
+    def full_name(self, device):
+        return '%s.%s' % (type(device).name, self.__name__)
+    
+    def name(self, device):
+        return self.__name__
     
 class ExpiredError(Exception):
     pass
