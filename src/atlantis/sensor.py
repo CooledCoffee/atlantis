@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import AutoNameComponent, ExpiredError
+from atlantis.base import DeviceComponent, ExpiredError
 from atlantis.db import SensorModel
 from datetime import datetime
 from decorated import ctx
@@ -7,7 +7,7 @@ from loggingd import log_enter, log_and_ignore_error
 import doctest
 import json
 
-class Sensor(AutoNameComponent):
+class Sensor(DeviceComponent):
     def available(self, device):
         if self.interval is None:
             return True
@@ -48,12 +48,6 @@ class Sensor(AutoNameComponent):
             model = self._get_model(device, create=True)
             model.value = json.dumps(value)
             model.time = datetime.now()
-    
-    def _get_model(self, device, create=False):
-        if create:
-            return ctx.session.get_or_create(SensorModel, self.full_name(device))
-        else:
-            return ctx.session.get(SensorModel, self.full_name(device))
      
     def _init(self, interval=60):
         super(Sensor, self)._init()

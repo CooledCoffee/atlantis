@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from decorated import Function
+from atlantis import db
+from decorated import Function, ctx
 
 class SingletonType(type):
     def __init__(self, name, bases, attrs):
@@ -30,12 +31,23 @@ class AbstractComponent(Singleton):
     def _register(cls):
         raise NotImplementedError()
     
-class AutoNameComponent(Function):
+class DeviceComponent(Function):
     def full_name(self, device):
         return '%s.%s' % (type(device).name, self.__name__)
     
     def name(self, device):
         return self.__name__
+    
+    def _get_bool_field(self, device, field):
+        model = self._get_model(device)
+        return getattr(model, field) if model is not None else None
+    
+    def _get_model(self, device, create=False):
+        model_type = getattr(db, type(self).__name__)
+        if create:
+            return ctx.session.get_or_create(model_type, self.full_name(device))
+        else:
+            return ctx.session.get(model_type, self.full_name(device))
     
 class ExpiredError(Exception):
     pass

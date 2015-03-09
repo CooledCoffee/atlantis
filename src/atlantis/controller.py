@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import AutoNameComponent
+from atlantis.base import DeviceComponent
 from loggingd import log_enter
 
-class Controller(AutoNameComponent):
+class Controller(DeviceComponent):
     def _init(self, group, order=0, invalidates=None):
         super(Controller, self)._init()
         self.group = group

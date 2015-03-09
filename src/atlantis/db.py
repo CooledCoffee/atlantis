@@ -25,9 +25,3 @@ class Solution(Model):
 ProblemModel = Problem
 SensorModel = Sensor
 SolutionModel = Solution
-
-def get_bool_field(model_class, key, field, default=False):
-    model = ctx.session.get(model_class, key)
-    if model is None:
-        return default
-    return getattr(model, field)

@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 from atlantis import db
-from atlantis.base import AutoNameComponent
+from atlantis.base import DeviceComponent
 from atlantis.db import ProblemModel
 from decorated import ctx
 from loggingd import log_enter, log_return, log_and_ignore_error
 
-class Problem(AutoNameComponent):
+class Problem(DeviceComponent):
     def enabled(self, device):
-        name = self.full_name(device)
-        return not db.get_bool_field(ProblemModel, name, 'disabled',
-                default=False)
+        return not self._get_bool_field(device, 'disabled')
         
     def exists(self, device):
-        name = self.full_name(device)
-        return db.get_bool_field(ProblemModel, name, 'exists')
+        return self._get_bool_field(device, 'exists')
     
     @log_enter('[DEBUG] Updating problem {self.name} ...')
     @log_return('Found problem {self.name}.', condition='ret')
@@ -22,8 +19,7 @@ class Problem(AutoNameComponent):
         if not self.enabled(device):
             return False
         exists = self._call(device)
-        name = self.full_name(device)
-        model = ctx.session.get_or_create(ProblemModel, name)
+        model = self._get_model(device, create=True)
         model.exists = exists
         return exists
     

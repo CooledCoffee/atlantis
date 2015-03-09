@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import db
-from atlantis.base import AutoNameComponent
+from atlantis.base import DeviceComponent
 from atlantis.db import SolutionModel
 from decorated import ctx
 from loggingd import log_enter, log_and_ignore_error
@@ -9,16 +9,14 @@ import loggingd
 
 log = loggingd.getLogger(__name__)
 
-class Solution(AutoNameComponent):
+class Solution(DeviceComponent):
     def applied(self, device):
-        name = self.full_name(device)
-        return db.get_bool_field(SolutionModel, name, 'applied')
+        return self._get_bool_field(device, 'applied')
     
     @log_enter('Applying solution {self.name} ...')
     def apply(self, device):
         self._call(device)
-        name = self.full_name(device)
-        model = ctx.session.get_or_create(SolutionModel, name)
+        model = self._get_model(device, create=True)
         model.applied = True
         
     def checker(self, func):
@@ -26,8 +24,7 @@ class Solution(AutoNameComponent):
         return func
     
     def enabled(self, device):
-        name = self.full_name(device)
-        return not db.get_bool_field(SolutionModel, name, 'disabled')
+        return not self._get_bool_field(device, 'disabled')
     
     def evaluator(self, func):
         self._evaluator = func
@@ -47,8 +44,7 @@ class Solution(AutoNameComponent):
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
     @log_and_ignore_error('Failed to update solution {self.name}.', exc_info=True)
     def update(self, device):
-        name = self.full_name(device)
-        model = ctx.session.get_or_create(SolutionModel, name)
+        model = self._get_model(device, create=True)
         model.applied = self._check(device)
     
     def _evaluate(self, device):
