@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from atlantis.db import SolutionModel
+from atlantis.db import SolutionModel, ProblemModel
 from atlantis.device import AbstractDevice
-from atlantis.solution import Solution
-from testutil import DbTestCase
+from atlantis.problem import Problem
+from atlantis.solution import Solution, DisableByProblem
+from testutil import DbTestCase, TestCase
 
 class SolutionTest(DbTestCase):
     def setUp(self):
@@ -140,7 +141,6 @@ class FitnessTest(SolutionTest):
             @Solution('thermometer.too_high', description='test description')
             def open_for_cooling(self):
                 pass
-            
             @open_for_cooling.evaluator
             def open_evaluator(self):
                 raise Exception()
@@ -149,4 +149,41 @@ class FitnessTest(SolutionTest):
         with self.mysql.dao.SessionContext():
             fitness = WindowDevice().open_for_cooling.fitness()
         self.assertEqual(0, fitness)
+        
+class DisableByProblemTest(DbTestCase):
+    def setUp(self):
+        super(DisableByProblemTest, self).setUp()
+        class AtmosphereDevice(AbstractDevice):
+            @Problem
+            def pollution(self):
+                pass
+        class WindowDevice(AbstractDevice):
+            @Solution('thermometer.too_high')
+            def open_for_cooling(self):
+                pass
+            @open_for_cooling.evaluator
+            @DisableByProblem('atmosphere.pollution')
+            def open_evaluator(self):
+                return 50
+        self.solution = WindowDevice().open_for_cooling
+        
+    def test_exists(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            session.add(ProblemModel(name='atmosphere.pollution', exists=True))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            fitness = self.solution.fitness()
+        self.assertEqual(0, fitness)
+        
+    def test_not_exists(self):
+        # set up
+        with self.mysql.dao.create_session() as session:
+            session.add(ProblemModel(name='atmosphere.pollution', exists=False))
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            fitness = self.solution.fitness()
+        self.assertEqual(50, fitness)
         

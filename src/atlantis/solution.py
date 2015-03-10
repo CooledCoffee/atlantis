@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.base import DeviceComponent
+from decorated import Function
 from loggingd import log_enter, log_and_ignore_error
 import doctest
 import loggingd
@@ -61,6 +62,18 @@ class Solution(DeviceComponent):
         self.description = description
         self._checker = None
         self._evaluator = None
+        
+class DisableByProblem(Function):
+    def _call(self, *args, **kw):
+        from atlantis import device
+        problem = device.locate_comp(self._problem)
+        if problem.exists():
+            return 0
+        return super(DisableByProblem, self)._call(*args, **kw)
+        
+    def _init(self, problem):
+        super(DisableByProblem, self)._init()
+        self._problem = problem
         
 def _process_fitness(fitness):
     '''
