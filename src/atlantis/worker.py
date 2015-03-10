@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis import device, rule
+from atlantis import device
 from loggingd import log_enter, log_return
 from mqueue import cron, MINUTELY
 
