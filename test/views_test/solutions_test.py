@@ -7,21 +7,28 @@ class EnableTest(DbTestCase):
     def test_enable(self):
         # set up
         with self.mysql.dao.create_session() as session:
-            session.add(SolutionModel(name='OPEN_WINDOW', disabled='TEMPERATURE_TOO_HIGH'))
+            session.add(SolutionModel(name='window.open_for_cooling', enabled=False))
         
         # test
         with self.mysql.dao.SessionContext():
-            solutions.enable('OPEN_WINDOW', 'TEMPERATURE_TOO_HIGH', True)
+            solutions.enable('window.open_for_cooling', True)
             
         # verify
         with self.mysql.dao.create_session() as session:
-            model = session.get(SolutionModel, 'OPEN_WINDOW')
-            self.assertEqual('', model.disabled)
+            model = session.get(SolutionModel, 'window.open_for_cooling')
+            self.assertTrue(model.enabled)
             
     def test_disable(self):
-        with self.mysql.dao.SessionContext():
-            solutions.enable('OPEN_WINDOW', 'TEMPERATURE_TOO_HIGH', False)
+        # set up
         with self.mysql.dao.create_session() as session:
-            model = session.get(SolutionModel, 'OPEN_WINDOW')
-            self.assertEqual('TEMPERATURE_TOO_HIGH', model.disabled)
+            session.add(SolutionModel(name='window.open_for_cooling', enabled=True))
+        
+        # test
+        with self.mysql.dao.SessionContext():
+            solutions.enable('window.open_for_cooling', False)
+            
+        # verify
+        with self.mysql.dao.create_session() as session:
+            model = session.get(SolutionModel, 'window.open_for_cooling')
+            self.assertFalse(model.enabled)
             
