@@ -27,3 +27,16 @@ class ListComponentsTest(TestCase):
         self.assertEqual('thermometer.outer', sensors[0].full_name())
         self.assertEqual('room', sensors[1].name())
         self.assertEqual('thermometer.room', sensors[1].full_name())
+
+class LocateCompTest(TestCase):
+    def test(self):
+        # set up
+        class ThermometerDevice(AbstractDevice):
+            @Sensor
+            def room(self):
+                return 25
+            
+        # test
+        comp = device.locate_comp('thermometer.room')
+        self.assertEqual('thermometer.room', comp.full_name())
+        
