@@ -4,7 +4,5 @@ from metaweb import api
 
 @api
 def trigger(name):
-    dname, cname = name.split('.')
-    dev = device.devices[dname]
-    controller = getattr(dev, cname)
+    controller = device.locate_comp(name)
     controller()
