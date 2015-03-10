@@ -13,19 +13,24 @@ def run():
 
 @log_enter('Updating sensors ...')
 def _update_sensors():
-    for d in device.devices.values():
-        for sensor in d.sensors:
+    for dev in device.devices.values():
+        for sensor in dev.sensors():
             if sensor.should_update():
                 sensor.update()
             
 @log_enter('Updating solution statuses ...')
 def _update_solution_statuses():
-    for solution in rule.solutions.values():
-        solution.update()
+    for dev in device.devices.values():
+        for solution in dev.solutions():
+            solution.update()
         
 @log_enter('Checking problems ...')
 def _update_problems():
-    problems = [p for p in rule.problems.values() if p.update()]
+    problems = []
+    for dev in device.devices.values():
+        for problem in dev.problems():
+            if problem.update():
+                problems.append(problem)
     problems.sort(key=lambda p: (p.priority, p.name))
     return problems
     
@@ -33,19 +38,24 @@ def _update_problems():
 def _apply_solutions(problem):
     solutions = _find_solutions(problem)
     while len(solutions) > 0:
-        best = _find_best_solution(problem, solutions)
+        best = _find_best_solution(solutions)
         if best is None:
             break
-        best.apply(problem)
+        best.apply()
         solutions.remove(best)
         
 def _find_solutions(problem):
-    problem_class = type(problem)
-    return [s for s in rule.solutions.values() if problem_class in s.targets]
+    pname = problem.full_name()
+    solutions = []
+    for dev in device.devices.values():
+        for solution in dev.solutions():
+            if solution.problem == pname:
+                solutions.append(solution)
+    return solutions
     
 @log_return('Found solution {ret.name}.', condition='ret is not None')
-def _find_best_solution(problem, solutions):
-    fitnesses = {s: s.fitness(problem) for s in solutions}
+def _find_best_solution(solutions):
+    fitnesses = {s: s.fitness() for s in solutions}
     fitnesses = fitnesses.items()
     fitnesses.sort(key=lambda item: -item[1])
     best, fitness = fitnesses[0]

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis import db
 from atlantis.base import DeviceComponent
-from atlantis.db import SolutionModel
-from decorated import ctx
 from loggingd import log_enter, log_and_ignore_error
 import doctest
 import loggingd
