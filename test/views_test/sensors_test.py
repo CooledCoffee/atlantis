@@ -10,10 +10,10 @@ import json
 class GetTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
-        self.patches.patch('atlantis.device.devices', {})
         class ThermometerDevice(AbstractDevice):
-            room = Sensor()
+            @Sensor
+            def room(self):
+                return 25
         with self.mysql.dao.create_session() as session:
             sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
@@ -33,10 +33,10 @@ class GetTest(DbTestCase):
 class AllTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
-        self.patches.patch('atlantis.device.devices', {})
         class ThermometerDevice(AbstractDevice):
-            room = Sensor()
+            @Sensor
+            def room(self):
+                return 25
         with self.mysql.dao.create_session() as session:
             sensor = SensorModel(name='thermometer.room',
                     error_rate=0.01,
@@ -56,13 +56,11 @@ class AllTest(DbTestCase):
 class SetTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
-        self.patches.patch('atlantis.device.devices', {})
-        class TemperatureSensor(Sensor):
-            def _retrieve(self):
-                return 25
+        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1)))
         class ThermometerDevice(AbstractDevice):
-            room = TemperatureSensor()
+            @Sensor
+            def room(self):
+                return 25
         
         # test
         with self.mysql.dao.SessionContext():
@@ -75,13 +73,11 @@ class SetTest(DbTestCase):
 class UpdateTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.device.datetime', datetime(2000, 1, 1)))
-        self.patches.patch('atlantis.device.devices', {})
-        class TemperatureSensor(Sensor):
-            def _retrieve(self):
-                return 25
+        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1)))
         class ThermometerDevice(AbstractDevice):
-            room = TemperatureSensor()
+            @Sensor
+            def room(self):
+                return 25
         
         # test
         with self.mysql.dao.SessionContext():

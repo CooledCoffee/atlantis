@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.base import DeviceComponent, ExpiredError
-from atlantis.db import SensorModel
 from datetime import datetime
-from decorated import ctx
 from loggingd import log_enter, log_and_ignore_error
 import doctest
 import json
