@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import SensorModel
-from atlantis.device import AbstractDevice, Sensor
+from atlantis.core.device import AbstractDevice, Sensor
 from atlantis.views import sensors
 from datetime import datetime
 from fixtures2 import DateTimeFixture
@@ -56,7 +56,7 @@ class AllTest(DbTestCase):
 class SetTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1)))
+        self.useFixture(DateTimeFixture('atlantis.core.sensor.datetime', datetime(2000, 1, 1)))
         class ThermometerDevice(AbstractDevice):
             @Sensor
             def room(self):
@@ -73,7 +73,7 @@ class SetTest(DbTestCase):
 class UpdateTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(DateTimeFixture('atlantis.sensor.datetime', datetime(2000, 1, 1)))
+        self.useFixture(DateTimeFixture('atlantis.core.sensor.datetime', datetime(2000, 1, 1)))
         class ThermometerDevice(AbstractDevice):
             @Sensor
             def room(self):

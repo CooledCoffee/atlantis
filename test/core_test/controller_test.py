@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from atlantis.controller import Controller
-from atlantis.device import AbstractDevice
-from atlantis.sensor import Sensor
+from atlantis.core.controller import Controller
+from atlantis.core.device import AbstractDevice
+from atlantis.core.sensor import Sensor
 from testutil import TestCase
 
 class InvalidatesTest(TestCase):

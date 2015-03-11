@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from atlantis import device
-from atlantis.device import Sensor, AbstractDevice
-from fixtures._fixtures.monkeypatch import MonkeyPatch
+from atlantis.core import device
+from atlantis.core.device import Sensor, AbstractDevice
 from testutil import TestCase
 
 class RegisterTest(TestCase):
     def test(self):
-        self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
         class ThermometerDevice(AbstractDevice):
             pass
         self.assertEqual(1, len(device.devices))

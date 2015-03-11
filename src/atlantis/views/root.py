@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from atlantis import templates, device as mdevice
+from atlantis import templates
+from atlantis.core import device as mdevice
 from decorated.base.dict import Dict
 from metaweb import page
 

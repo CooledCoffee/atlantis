@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.base import DeviceComponent
 from atlantis.db import SensorModel, ProblemModel
-from atlantis.device import AbstractDevice
+from atlantis.core.device import AbstractDevice
 from fixtures2 import TestCase
 from testutil import DbTestCase
 

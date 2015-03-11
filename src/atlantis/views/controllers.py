@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis import device
+from atlantis.core import device
 from metaweb import api
 
 @api

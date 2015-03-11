@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import ProblemModel
-from atlantis.device import AbstractDevice
-from atlantis.problem import Problem
+from atlantis.core.device import AbstractDevice
+from atlantis.core.problem import Problem
 from testutil import DbTestCase
 
 class ProblemTest(DbTestCase):

@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
-from atlantis import worker, device
+from atlantis import worker
 from atlantis.db import SensorModel, SolutionModel
-from atlantis.device import AbstractDevice, Sensor
-from atlantis.problem import Problem
-from atlantis.solution import Solution
-from fixtures._fixtures.monkeypatch import MonkeyPatch
+from atlantis.core.device import AbstractDevice, Sensor
+from atlantis.core.problem import Problem
+from atlantis.core.solution import Solution
 from testutil import DbTestCase, TestCase
 import json
 
 class UpdateSensorsTest(DbTestCase):
     def test(self):
         # set up
-        self.useFixture(MonkeyPatch('atlantis.device.devices', {}))
         class ThermometerDevice(AbstractDevice):
             @Sensor
             def room(self):

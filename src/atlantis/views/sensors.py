@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis import device
+from atlantis.core import device
 from atlantis.db import SensorModel
 from decorated.base.context import ctx
 from metaweb import api

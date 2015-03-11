@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from atlantis.device import AbstractDevice, Controller
+from atlantis.core.controller import Controller
+from atlantis.core.device import AbstractDevice
 from atlantis.views import controllers
 from testutil import TestCase
 

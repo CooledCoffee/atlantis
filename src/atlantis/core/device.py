@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
 from atlantis.base import AbstractComponent
-from atlantis.controller import Controller
-from atlantis.problem import Problem
-from atlantis.sensor import Sensor
-from atlantis.solution import Solution
+from atlantis.core.controller import Controller
+from atlantis.core.problem import Problem
+from atlantis.core.sensor import Sensor
+from atlantis.core.solution import Solution
 
 devices = {}
 

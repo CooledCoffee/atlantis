@@ -36,7 +36,7 @@ class Solution(DeviceComponent):
                 return 0
             return self._evaluate(device)
         except:
-            log.warn('Failed to calc fitness for "%s".' % self.name, exc_info=True)
+            log.warn('Failed to calc fitness for "%s".' % self.full_name(device), exc_info=True)
             return 0
         
     @log_enter('[DEBUG] Updating solution status {self.name} ...')
@@ -65,7 +65,7 @@ class Solution(DeviceComponent):
         
 class DisableByProblem(Function):
     def _call(self, *args, **kw):
-        from atlantis import device
+        from atlantis.core import device
         problem = device.locate_comp(self._problem)
         if problem.exists():
             return 0

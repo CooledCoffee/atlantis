@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from atlantis.db import SolutionModel, ProblemModel
-from atlantis.device import AbstractDevice
-from atlantis.problem import Problem
-from atlantis.solution import Solution, DisableByProblem
-from testutil import DbTestCase, TestCase
+from atlantis.core.device import AbstractDevice
+from atlantis.core.problem import Problem
+from atlantis.core.solution import Solution, DisableByProblem
+from testutil import DbTestCase
 
 class SolutionTest(DbTestCase):
     def setUp(self):
