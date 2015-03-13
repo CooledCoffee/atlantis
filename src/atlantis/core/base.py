@@ -32,6 +32,8 @@ class AbstractComponent(Singleton):
         raise NotImplementedError()
     
 class DeviceComponent(Function):
+    model_type = None
+    
     def full_name(self, device):
         return '%s.%s' % (type(device).name, self.__name__)
     
@@ -39,11 +41,10 @@ class DeviceComponent(Function):
         return self.__name__
     
     def _get_model(self, device, create=False):
-        model_type = getattr(db, type(self).__name__)
         if create:
-            return ctx.session.get_or_create(model_type, self.full_name(device))
+            return ctx.session.get_or_create(self.model_type, self.full_name(device))
         else:
-            return ctx.session.get(model_type, self.full_name(device))
+            return ctx.session.get(self.model_type, self.full_name(device))
     
     def _get_model_field(self, device, field, default=False):
         model = self._get_model(device)

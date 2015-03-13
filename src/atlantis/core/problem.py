@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from atlantis.core.base import DeviceComponent
+from atlantis.db import ProblemModel
 from loggingd import log_enter, log_return, log_and_ignore_error
 
 class Problem(DeviceComponent):
+    model_type = ProblemModel
+    
     def enabled(self, device):
         return self._get_model_field(device, 'enabled', default=True)
         

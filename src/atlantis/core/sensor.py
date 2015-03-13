@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from atlantis.core.base import DeviceComponent, ExpiredError
+from atlantis.db import SensorModel
 from datetime import datetime
 from loggingd import log_enter, log_and_ignore_error
 import doctest
 import json
 
 class Sensor(DeviceComponent):
+    model_type = SensorModel
+    
     def available(self, device):
         if self.interval is None:
             return True

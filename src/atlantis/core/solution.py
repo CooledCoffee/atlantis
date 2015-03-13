@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis.core.base import DeviceComponent
+from atlantis.db import SolutionModel
 from decorated import Function
 from loggingd import log_enter, log_and_ignore_error
 import doctest
@@ -8,6 +9,8 @@ import loggingd
 log = loggingd.getLogger(__name__)
 
 class Solution(DeviceComponent):
+    model_type = SolutionModel
+    
     def applied(self, device):
         return self._get_model_field(device, 'applied')
     

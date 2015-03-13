@@ -19,7 +19,7 @@ class GetModelTest(DbTestCase):
     def test(self):
         # set up
         class Sensor(DeviceComponent):
-            pass
+            model_type = SensorModel
         class ThermometerDevice(AbstractDevice):
             @Sensor
             def room(self):
@@ -36,7 +36,7 @@ class GetModelFieldTest(DbTestCase):
     def setUp(self):
         super(GetModelFieldTest, self).setUp()
         class Problem(DeviceComponent):
-            pass
+            model_type = ProblemModel
         class ThermometerDevice(AbstractDevice):
             @Problem
             def room(self):
