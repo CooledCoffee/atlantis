@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import DeviceComponent, ExpiredError
+from atlantis.core.base import DeviceComponent, ExpiredError
 from datetime import datetime
 from loggingd import log_enter, log_and_ignore_error
 import doctest

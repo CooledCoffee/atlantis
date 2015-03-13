@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import Singleton, AbstractComponent
+from atlantis.core.base import Singleton, AbstractComponent
 from testutil import TestCase
 
 class SingletonTest(TestCase):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from atlantis import util
-from atlantis.base import AbstractComponent
+from atlantis.core.base import AbstractComponent
 from atlantis.core.controller import Controller
 from atlantis.core.problem import Problem
 from atlantis.core.sensor import Sensor

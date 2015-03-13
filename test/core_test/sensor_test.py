@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from atlantis.base import ExpiredError
-from atlantis.db import SensorModel
+from atlantis.core.base import ExpiredError
 from atlantis.core.device import AbstractDevice
 from atlantis.core.sensor import Sensor
+from atlantis.db import SensorModel
 from datetime import datetime, timedelta
 from fixtures2 import DateTimeFixture
 from testutil import DbTestCase
