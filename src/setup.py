@@ -26,6 +26,7 @@ setup(
     ],
     packages=[
         'atlantis',
+        'atlantis.core',
         'atlantis.views',
     ],
     package_data={
