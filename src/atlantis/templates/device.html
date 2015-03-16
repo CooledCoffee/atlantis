@@ -12,9 +12,9 @@
 					<td class="col-lg-4">{{sensor.value()}} ({{sensor.time()}})</td>
 					<td class="col-lg-1" style="text-align: right; padding-right: 60px">
 						{% if sensor.interval != None %}
-							<span class="glyphicon glyphicon-refresh" style="cursor: pointer" data-url="sensors/update?name=%22{{sensor.full_name}}%22"></span>
+							<span class="glyphicon glyphicon-refresh" style="cursor: pointer" data-url="sensors/update?name=%22{{sensor.full_name()}}%22"></span>
 						{% endif %}
-						<span class="glyphicon glyphicon-edit" style="cursor: pointer" data-url="sensors/set?name=%22{{sensor.full_name}}%22"></span>
+						<span class="glyphicon glyphicon-edit" style="cursor: pointer" data-url="sensors/set?name=%22{{sensor.full_name()}}%22"></span>
 					</td>
 				</tr>
 			{% endfor %}
@@ -28,6 +28,28 @@
 					<a href="controllers/trigger?name=%22{{controller.full_name()}}%22" class="btn btn-primary link-trigger" style="width: 70px">{{controller.name()}}</a>
 				{% endfor %}
 			</div>
+		{% endfor %}
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-6">
+		<h4>Problems</h4>
+		{% for problem in device.problems() %}
+			{% if problem.exists() %}
+				<div style="color: red">{{problem.name()}}: {{problem.description}}</div>
+			{% else %}
+				<div>{{problem.name()}}: {{problem.description}}</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+	<div class="col-lg-6">
+		<h4>Solutions</h4>
+		{% for solution in device.solutions() %}
+			{% if solution.applied() %}
+				<div style="color: green">{{solution.name()}}: {{solution.description}}</div>
+			{% else %}
+				<div>{{solution.name()}}: {{solution.description}}</div>
+			{% endif %}
 		{% endfor %}
 	</div>
 </div>
