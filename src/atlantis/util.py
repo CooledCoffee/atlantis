@@ -13,6 +13,5 @@ def init(dao, templates_dir):
     db.dao = dao
     templates.init(templates_dir)
     modutil.load_tree('devices')
-    modutil.load_tree('rules')
     import worker  # @UnusedImport
     

@@ -9,10 +9,16 @@ env = None
 
 class AtlantisEnvironment(Environment):
     def getattr(self, obj, attr):
-        try:
-            return getattr(obj, attr)
-        except ExpiredError:
-            return None
+        attr = getattr(obj, attr)
+        if callable(attr):
+            def _wrapper(*args, **kw):
+                try:
+                    return attr(*args, **kw)
+                except ExpiredError:
+                    return None
+            return _wrapper
+        else:
+            return attr
 
 def init(dirname=None):
     global env
