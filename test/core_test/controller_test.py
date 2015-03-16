@@ -12,7 +12,7 @@ class InvalidatesTest(TestCase):
             def power(self):
                 InvalidatesTest.power = True
             
-            @Controller('power', invalidates='power')
+            @Controller('power', invalidate='power')
             def on(self):
                 pass
             
