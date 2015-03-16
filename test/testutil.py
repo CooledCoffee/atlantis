@@ -8,7 +8,7 @@ class TestCase(TestCase):
         super(TestCase, self).setUp()
         self.patches = self.useFixture(PatchesFixture())
         self.mox = self.useFixture(MoxFixture())
-        self.patches.patch('atlantis.core.device.devices', {})
+        self.patches.patch('atlantis.core.devices', {})
 
 class DbTestCase(TestCase):
     def setUp(self):

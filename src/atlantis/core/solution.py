@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from atlantis import core
 from atlantis.core.base import DeviceComponent
 from atlantis.db import SolutionModel
 from decorated import Function
@@ -68,8 +69,7 @@ class Solution(DeviceComponent):
         
 class DisableByProblem(Function):
     def _call(self, *args, **kw):
-        from atlantis.core import device
-        problem = device.locate_comp(self._problem)
+        problem = core.clocate(self._problem)
         if problem.exists():
             return 0
         return super(DisableByProblem, self)._call(*args, **kw)

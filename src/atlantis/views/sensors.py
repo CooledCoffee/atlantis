@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from atlantis import core
 from atlantis.core import device
 from atlantis.db import SensorModel
 from decorated.base.context import ctx
@@ -8,7 +9,7 @@ import json
 @api
 def all():
     results = []
-    for dev in device.devices.values():
+    for dev in core.devices.values():
         for sensor in dev.sensors():
             result = get(sensor.full_name())
             results.append(result)
@@ -17,7 +18,7 @@ def all():
 
 @api
 def get(name):
-    sensor = device.locate_comp(name)
+    sensor = core.clocate(name)
     model = ctx.session.get(SensorModel, name)
     return {
         'error_rate': model.error_rate,
@@ -29,11 +30,11 @@ def get(name):
     
 @api
 def update(name):
-    sensor = device.locate_comp(name)
+    sensor = core.clocate(name)
     sensor.update()
     return get(name)
 
 @api
 def set(name, value):
-    sensor = device.locate_comp(name)
+    sensor = core.clocate(name)
     sensor.value(value)

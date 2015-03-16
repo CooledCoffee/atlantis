@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from atlantis.core import device
+from atlantis import core
 from metaweb import api
 
 @api
 def trigger(name):
-    controller = device.locate_comp(name)
+    controller = core.clocate(name)
     controller()

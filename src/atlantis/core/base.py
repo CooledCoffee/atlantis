@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from atlantis import db
 from decorated import Function, ctx
 
 class SingletonType(type):

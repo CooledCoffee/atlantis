@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from atlantis import core
 from atlantis.core import device
 from atlantis.core.device import Sensor, AbstractDevice
 from testutil import TestCase
@@ -7,7 +8,7 @@ class RegisterTest(TestCase):
     def test(self):
         class ThermometerDevice(AbstractDevice):
             pass
-        self.assertEqual(1, len(device.devices))
+        self.assertEqual(1, len(core.devices))
         
 class ListComponentsTest(TestCase):
     def test(self):
@@ -25,16 +26,3 @@ class ListComponentsTest(TestCase):
         self.assertEqual('thermometer.outer', sensors[0].full_name())
         self.assertEqual('room', sensors[1].name())
         self.assertEqual('thermometer.room', sensors[1].full_name())
-
-class LocateCompTest(TestCase):
-    def test(self):
-        # set up
-        class ThermometerDevice(AbstractDevice):
-            @Sensor
-            def room(self):
-                return 25
-            
-        # test
-        comp = device.locate_comp('thermometer.room')
-        self.assertEqual('thermometer.room', comp.full_name())
-        

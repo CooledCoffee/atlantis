@@ -6,14 +6,13 @@ from atlantis.core.problem import Problem
 from atlantis.core.sensor import Sensor
 from atlantis.core.solution import Solution
 
-devices = {}
-
 class AbstractDevice(AbstractComponent):
     @classmethod
     def _register(cls):
+        from atlantis import core
         cls.name = util.calc_name(cls)
         device = cls.instance()
-        devices[cls.name] = device
+        core.devices[cls.name] = device
         
     def controllers(self):
         return self._list_components(Controller)
@@ -36,8 +35,3 @@ class AbstractDevice(AbstractComponent):
             if isinstance(method.im_func, component_type):
                 results.append(method)
         return results
-
-def locate_comp(full_name):
-    dname, cname = full_name.split('.')
-    device = devices.get(dname)
-    return getattr(device, cname)

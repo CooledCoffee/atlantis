@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from atlantis import core
 from atlantis.core import device
 from loggingd import log_enter, log_return
 from mqueue import cron, MINUTELY
@@ -13,21 +14,21 @@ def run():
 
 @log_enter('Updating sensors ...')
 def _update_sensors():
-    for dev in device.devices.values():
+    for dev in core.devices.values():
         for sensor in dev.sensors():
             if sensor.should_update():
                 sensor.update()
             
 @log_enter('Updating solution statuses ...')
 def _update_solution_statuses():
-    for dev in device.devices.values():
+    for dev in core.devices.values():
         for solution in dev.solutions():
             solution.update()
         
 @log_enter('Checking problems ...')
 def _update_problems():
     problems = []
-    for dev in device.devices.values():
+    for dev in core.devices.values():
         for problem in dev.problems():
             if problem.update():
                 problems.append(problem)
@@ -47,7 +48,7 @@ def _apply_solutions(problem):
 def _find_solutions(problem):
     pname = problem.full_name()
     solutions = []
-    for dev in device.devices.values():
+    for dev in core.devices.values():
         for solution in dev.solutions():
             if solution.problem == pname:
                 solutions.append(solution)
