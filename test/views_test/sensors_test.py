@@ -8,7 +8,7 @@ from testutil import DbTestCase
 import json
 
 class GetTest(DbTestCase):
-    def test(self):
+    def test_success(self):
         # set up
         class ThermometerDevice(AbstractDevice):
             @Sensor
@@ -29,6 +29,22 @@ class GetTest(DbTestCase):
         self.assertEqual(60, result['interval'])
         self.assertEqual(datetime(2000, 1, 1), result['time'])
         self.assertEqual(25, result['value'])
+        
+    def test_model_not_exists(self):
+        # set up
+        class ThermometerDevice(AbstractDevice):
+            @Sensor
+            def room(self):
+                return 25
+            
+        # test
+        with self.mysql.dao.SessionContext():
+            result = sensors.get('thermometer.room')
+        self.assertEqual('thermometer.room', result['name'])
+        self.assertEqual(0, result['error_rate'])
+        self.assertEqual(60, result['interval'])
+        self.assertEqual(datetime(1970, 1, 1), result['time'])
+        self.assertIsNone(result['value'])
     
 class AllTest(DbTestCase):
     def test(self):

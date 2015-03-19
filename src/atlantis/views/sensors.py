@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis import core
 from atlantis.db import SensorModel
+from datetime import datetime
 from decorated.base.context import ctx
 from metaweb import api
 import json
@@ -20,11 +21,11 @@ def get(name):
     sensor = core.clocate(name)
     model = ctx.session.get(SensorModel, name)
     return {
-        'error_rate': model.error_rate,
+        'error_rate': model.error_rate if model is not None else 0,
         'name': name,
         'interval': sensor.interval,
-        'time': model.time,
-        'value': json.loads(model.value),
+        'time': model.time if model is not None else datetime(1970, 1, 1),
+        'value': json.loads(model.value) if model is not None else None,
     }
     
 @api
