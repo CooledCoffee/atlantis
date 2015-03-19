@@ -9,7 +9,7 @@ class Controller(DeviceComponent):
         self.order = order
         self._invalidate = invalidate
         
-    @log_enter('Triggering controller {self.full_name()} ...')
+    @log_enter('Triggering controller {self.full_name(device)} ...')
     def trigger(self, device):
         result = self._call(device)
         if self._invalidate is not None:

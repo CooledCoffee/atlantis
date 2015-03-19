@@ -26,8 +26,8 @@ class Sensor(DeviceComponent):
         sensor = self._get_model(device)
         return sensor.time if sensor is not None else datetime(1970, 1, 1)
     
-    @log_enter('Updating sensor {self.full_name()} ...')
-    @log_and_ignore_error('Failed to update sensor {self.full_name()}.', exc_info=True)
+    @log_enter('Updating sensor {self.full_name(device)} ...')
+    @log_and_ignore_error('Failed to update sensor {self.full_name(device)}.', exc_info=True)
     def update(self, device):
         try:
             value = self._call(device)

@@ -15,7 +15,7 @@ class Solution(DeviceComponent):
     def applied(self, device):
         return self._get_model_field(device, 'applied')
     
-    @log_enter('Applying solution {self.name()} ...')
+    @log_enter('Applying solution {self.name(device)} ...')
     def apply(self, device):
         self._call(device)
         model = self._get_model(device, create=True)
@@ -43,8 +43,8 @@ class Solution(DeviceComponent):
             log.warn('Failed to calc fitness for "%s".' % self.full_name(device), exc_info=True)
             return 0
         
-    @log_enter('[DEBUG] Updating solution status {self.name()} ...')
-    @log_and_ignore_error('Failed to update solution {self.name()}.', exc_info=True)
+    @log_enter('[DEBUG] Updating solution status {self.name(device)} ...')
+    @log_and_ignore_error('Failed to update solution {self.name(device)}.', exc_info=True)
     def update(self, device):
         model = self._get_model(device, create=True)
         model.applied = self._check(device)
