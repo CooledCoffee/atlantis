@@ -8,6 +8,7 @@
 	border-radius: 10px;
 	border-color: #c3c3c3;
 	padding: 20px;
+	padding-top: 15px;
 }
 
 .splitter {
@@ -34,7 +35,7 @@ a:hover {
 {% for row in devices|batch(3) %}
 	<div class="row">
 		{% for device in row %}
-			<div class="col-lg-4" style="padding: 10px">
+			<div class="col-lg-4" style="padding: 5px">
 				<div class="card">
 					<a href="device?name={{device.name}}" class="link-device">
 						{{device.name|capitalize}}
