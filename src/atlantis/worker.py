@@ -34,7 +34,7 @@ def _update_problems():
     problems.sort(key=lambda p: (p.priority, p.name))
     return problems
     
-@log_enter('Solving problem {problem.name()} ...')
+@log_enter('Solving problem {problem.full_name()} ...')
 def _apply_solutions(problem):
     solutions = _find_solutions(problem)
     while len(solutions) > 0:
@@ -53,7 +53,7 @@ def _find_solutions(problem):
                 solutions.append(solution)
     return solutions
     
-@log_return('Found solution {ret.name()}.', condition='ret is not None')
+@log_return('Found solution {ret.full_name()}.', condition='ret is not None')
 def _find_best_solution(solutions):
     fitnesses = {s: s.fitness() for s in solutions}
     fitnesses = fitnesses.items()
