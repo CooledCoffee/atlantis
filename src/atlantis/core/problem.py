@@ -12,9 +12,9 @@ class Problem(DeviceComponent):
     def exists(self, device):
         return self._get_model_field(device, 'exists')
     
-    @log_enter('[DEBUG] Updating problem {self.name} ...')
-    @log_return('Found problem {self.name}.', condition='ret')
-    @log_and_ignore_error('Failed to update problem {self.name}.', exc_info=True)
+    @log_enter('[DEBUG] Updating problem {self.name()} ...')
+    @log_return('Found problem {self.name()}.', condition='ret')
+    @log_and_ignore_error('Failed to update problem {self.name()}.', exc_info=True)
     def update(self, device):
         if not self.enabled(device):
             return False
