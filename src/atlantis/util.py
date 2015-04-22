@@ -3,6 +3,8 @@ from atlantis import templates
 from decorated.util import modutil
 import inflection
 
+NOTSET = object()
+
 def calc_name(cls):
     name = inflection.underscore(cls.__name__)
     ss = name.split('_')

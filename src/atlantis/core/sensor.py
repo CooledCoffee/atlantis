@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from atlantis.core.base import DeviceComponent, ExpiredError
 from atlantis.db import SensorModel
+from atlantis.util import NOTSET
 from datetime import datetime
 from loggingd import log_enter, log_and_ignore_error
 import doctest
@@ -39,8 +40,8 @@ class Sensor(DeviceComponent):
             sensor.error_rate = _calc_error_rate(sensor.error_rate, self.interval, True)
             raise
     
-    def value(self, device, value=None):
-        if value is None:
+    def value(self, device, value=NOTSET):
+        if value == NOTSET:
             if not self.available(device):
                 raise ExpiredError('Sensor %s has expired.' % self.full_name(device))
             model = self._get_model(device)
